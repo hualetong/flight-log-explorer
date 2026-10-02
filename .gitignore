@@ -1,0 +1,8 @@
+node_modules/
+preview.png
+github-proof.png
+*.BIN
+*.bin
+*_parsed.json
+test-results/
+playwright-report/
