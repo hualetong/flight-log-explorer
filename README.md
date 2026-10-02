@@ -1,4 +1,4 @@
-# Flight Log Explorer / 飞行日志可视化工具
+# Flight Log Explorer / (飞行日志可视化工具)
 
 飞行轨迹工作台 v0.1：本地离线运行的 ArduPilot 飞行日志交互工具。
 
