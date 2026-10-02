@@ -1,7 +1,8 @@
 (function factory(root) {
   'use strict';
   const sizes = {b:1,B:1,M:1,h:2,H:2,c:2,C:2,i:4,I:4,e:4,E:4,L:4,f:4,d:8,q:8,Q:8,n:4,N:16,Z:64,a:64};
-  const wanted = new Set(['GPS','POS','MODE','ATT','CTUN','ARSP','BAT','MSG']);
+  // Static configuration and embedded files are not point-in-time telemetry.
+  const excluded = new Set(['FILE','FMTU','UNIT','MULT','PARM','VER']);
   function parseBin(buffer) {
     const v = new DataView(buffer), bytes = new Uint8Array(buffer), formats = new Map(), data = {};
     let skipped = 0, truncated = false;
@@ -39,7 +40,7 @@
       const f=formats.get(id);
       if(!f) {o++;skipped++;continue;}
       if(o+f.length>v.byteLength) {truncated=true;break;}
-      if(wanted.has(f.name)) {
+      if(!excluded.has(f.name)) {
         let p=o+3; const row={}; let valid=true;
         for(let k=0;k<f.format.length;k++) {
           const c=f.format[k], size=sizes[c];
@@ -84,7 +85,21 @@
     for(const p of points) {let dl=p.lon-origin.lon;dl=((dl+540)%360)-180;p.x=R*dl*rad*Math.cos(origin.lat*rad);p.y=R*(p.lat-origin.lat)*rad;p.elapsed=p.t-origin.t;}
     const msgs=(data.MSG||[]).map(r=>r.Message??r.Msg??'').join(' ');
     const vehicle=/ArduCopter/i.test(msgs)?'copter':/ArduPlane/i.test(msgs)?'plane':/ArduRover/i.test(msgs)?'rover':'unknown';
-    return {points,vehicle,receiver,warnings:data._warnings||[],modes};
+    const streams={};
+    for(const [type,records] of Object.entries(data)) {
+      if(excluded.has(type)||type.startsWith('_')||!Array.isArray(records)) continue;
+      const rows=sorted(records);if(!rows.length)continue;
+      // PID/TECS fields named I are integrator values, not sensor instance IDs.
+      const instanceCandidates=type==='VIBE'?['IMU']:/^XK/.test(type)?['C']:['GPS','GPA','IMU','MAG','BARO','ARSP','UART','CANS'].includes(type)?['I','Instance']:['Inst','Instance'];
+      const instanceKey=instanceCandidates.find(k=>rows.some(r=>num(r[k])!==null));
+      for(const r of rows) {
+        const instance=instanceKey?String(r[instanceKey]??'未知'):null;
+        const id=instanceKey?`${type}:${instanceKey}:${instance}`:type;
+        if(!streams[id])streams[id]={type,instanceKey,instance,rows:[]};
+        streams[id].rows.push(r);
+      }
+    }
+    return {points,vehicle,receiver,warnings:data._warnings||[],modes,streams};
   }
   const api={parseBin,normalize,latest};
   api.workerSource='('+factory.toString()+')(self);';

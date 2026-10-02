@@ -14,6 +14,8 @@ for(const name of ['20261001_1602_log75','20261001_1620_log76']){
   }
  }
  const a=normalize(data),b=normalize(expected);assert.equal(a.points.length,b.points.length);
+ assert.ok(a.streams.CTUN.rows.length>0);assert.ok(a.streams.PIDP.rows.length>0);assert.ok(!Object.keys(a.streams).some(k=>k.startsWith('PIDP:I:')));
+ assert.ok(Object.keys(a.streams).some(k=>k.startsWith('VIBE:IMU:')));
  for(let i=0;i<a.points.length;i++){assert.equal(a.points[i].mode,b.points[i].mode);assert.ok(Math.abs(a.points[i].relativeAlt-b.points[i].relativeAlt)<1e-4);}
  console.log(name+': BIN/JSON match, '+a.points.length+' points; vehicle='+a.vehicle);
 }

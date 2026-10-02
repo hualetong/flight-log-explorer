@@ -1,8 +1,8 @@
 # Flight Log Explorer / (飞行日志可视化工具)
 
-An offline, browser-based ArduPilot flight log explorer. Version 0.1.
+An offline, browser-based ArduPilot flight log explorer. Version 0.2.
 
-本地离线运行的 ArduPilot 飞行日志交互工具，版本 v0.1。
+本地离线运行的 ArduPilot 飞行日志交互工具，版本 v0.2。
 
 ## Quick start / 快速开始
 
@@ -18,9 +18,20 @@ Download or clone this repository, then double-click `index.html`. Click **导�
 | North-up, equal-scale east/north track in meters, colored by flight mode, with start/end markers. Zoom with the wheel, drag to pan, and use **适应轨迹** to fit the track. | 北向上、等比例东/北米制轨迹，按模式着色并标记起终点。滚轮缩放、拖动平移，「适应轨迹」复位。 |
 | Hover to inspect the nearest recorded point: mode, ground speed, GPS altitude, height relative to home, airspeed, coordinates, attitude, satellites, and voltage. Click to select its time. | 悬停查看最近记录点的模式、地速、GPS 海拔、相对起飞点高度、空速、经纬度、姿态、卫星和电压；点击定位时间。 |
 | Time slider, playback at 1×/5×/10×, ground-speed and relative-height profiles, and PNG export. | 时间滑块、1/5/10 倍回放、地速与相对高度曲线、PNG 导出。 |
+| Search and select point information with **显示信息** (Display information). Existing fields are selected by default; imported telemetry adds optional fields grouped by message and sensor instance. Selection applies to tooltips and point details and is saved locally. | 点击「显示信息」搜索并勾选字段。现有字段默认勾选；导入后提供按消息和传感器实例区分的附加字段。选择同步到悬停提示和点详情，并在本机保存。 |
 | Summary of valid GPS duration, cumulative track distance, maximum ground speed, and position count. Ground/taxi records are included; takeoff and landing are not detected automatically. | 概览显示有效 GPS 时间范围、累积距离、最大地速和定位点数。包含地面滑行与静止记录，不自动识别起飞和着陆。 |
 
 ## Data interpretation / 数据口径
+
+### Display selection / 显示信息选择
+
+The default selection contains mode, log/elapsed time, ground speed, airspeed, GPS altitude, height relative to home, coordinates, roll/pitch, satellite count/HDOP, and battery voltage. **恢复默认** restores this selection; **全部取消** hides all point information. Track coloring, summary statistics, and the speed/height profiles are independent of this selection.
+
+默认显示模式、日志/相对时间、地速、空速、GPS 海拔、相对高度、坐标、横滚/俯仰、卫星数/HDOP 和电压。「恢复默认」恢复上述选择，「全部取消」隐藏点信息。轨迹着色、概览统计和地速/高度曲线独立于此设置。
+
+Additional options come from timestamped numeric/text fields actually present in the imported log, including throttle, current, heading, vibration, navigation errors, mission records, and messages. Static parameters, firmware metadata, embedded files, and array payloads are excluded. Missing or stale values show `—`; a recorded zero remains zero and does not prove that a sensor is working. Unlabeled fields retain their source names and decoded values; consult the firmware's log definitions for units and enum meanings. This adds point values, not mission overlays or event timelines.
+
+附加选项来自导入日志中实际存在、带时间戳的数值/文字字段，包括油门、电流、航向、振动、导航误差、任务记录和文字消息。静态参数、固件元数据、内嵌文件和数组载荷不在选择范围内。缺失或过期值显示「—」；日志中的 0 保留为 0，不代表传感器有效。未标注字段保留来源名称和解码值，单位及枚举含义请参考相应固件的日志定义。此功能增加点详情，不包含任务叠加图或事件时间轴。
 
 ### GPS and track continuity / GPS 与轨迹连续性
 
