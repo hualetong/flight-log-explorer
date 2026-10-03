@@ -8,3 +8,4 @@ github-proof.png
 *_parsed.json
 test-results/
 playwright-report/
+dist/

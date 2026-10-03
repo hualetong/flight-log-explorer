@@ -4,11 +4,35 @@ An offline, browser-based ArduPilot flight log explorer. Version 0.4.
 
 本地离线运行的 ArduPilot 飞行日志交互工具，版本 v0.4。
 
+[Download v0.4 / 下载 v0.4](https://github.com/hualetong/flight-log-explorer/releases/tag/v0.4) · [Release notes / 更新说明](docs/RELEASE-v0.4.md) · [MIT License / 开源许可](LICENSE)
+
+## Preview / 功能预览
+
+All previews use synthetic data with artificial coordinates, relative timestamps, and no device identifiers or personal information.
+
+所有预览均使用模拟数据，坐标为人工生成，仅包含相对时间，不含真实飞行位置、设备标识或个人信息。
+
+![Mode-colored track and playback / 模式着色轨迹与回放](docs/images/demo.gif)
+
+![Flight track / 飞行轨迹](docs/images/track.png)
+
+![Time selection with full timeline context / 时间框选与完整时间轴](docs/images/range-selection.png)
+
+![Multiple parameters and unit axes / 多参数叠加与单位分轴](docs/images/parameter-chart.png)
+
+Try **查看示例轨迹** on the start screen, or import [simulated-flight.json](examples/simulated-flight.json). Download the JSON using GitHub's **Download raw file** button. The 200-second sample contains 1,001 GPS points, FBWA/AUTO/RTL modes, height, attitude, airspeed, battery, throttle, and vibration data. This is a demonstration fixture, not a navigation dataset.
+
+点击启动页面的「查看示例轨迹」，或下载并导入 [simulated-flight.json](examples/simulated-flight.json)（在 GitHub 文件页点击 Download raw file）。示例包含 200 秒、1,001 个定位点、FBWA/AUTO/RTL 模式以及高度、姿态、空速、电池、油门和振动数据，仅用于演示。
+
 ## Quick start / 快速开始
 
 Download or clone this repository, then double-click `index.html`. Click **导入飞行日志** (Import flight log), or drag a log file onto the page. No installation, server, or internet connection is required. Logs are parsed locally and are never uploaded. The current application interface is in Chinese.
 
 下载或克隆仓库后，双击 `index.html`。点击「导入飞行日志」，或将日志文件拖入页面。无需安装依赖、启动服务或联网；日志只在本机解析，不会上传。当前工具界面为中文。
+
+For the release ZIP, extract the entire archive first and keep the HTML, JavaScript, and CSS files together. Open the extracted `index.html` in a modern desktop browser such as Edge or Chrome.
+
+使用 Release ZIP 时，请先完整解压，保持 HTML、JavaScript 和 CSS 文件在同一目录，再用 Edge、Chrome 等现代桌面浏览器打开 `index.html`。
 
 ## Features / 功能
 
@@ -132,3 +156,9 @@ node check-charts.cjs
 Checks use the simulated example by default. Set `BROWSER_CHANNEL=msedge` to use an installed Microsoft Edge, or `FLIGHT_LOG_DIR` to test the original BIN fixture. These checks cover hover, click, zoom, seeking, playback, PNG export, import-error handling, and mobile layout.
 
 默认使用模拟示例验证。设置 `BROWSER_CHANNEL=msedge` 可使用已安装的 Edge；设置 `FLIGHT_LOG_DIR` 可验证原始 BIN。检查涵盖悬停、点击、缩放、时间定位、回放、PNG 导出、导入错误处理和移动端布局。
+
+## License and feedback / 许可与反馈
+
+Released under the [MIT License](LICENSE). Feedback and contributions are welcome through [GitHub Issues](https://github.com/hualetong/flight-log-explorer/issues) and pull requests. When reporting an issue, include your browser, firmware/log format, and steps to reproduce; share synthetic or sanitized logs where possible.
+
+项目采用 [MIT 许可](LICENSE)，欢迎通过 [GitHub Issues](https://github.com/hualetong/flight-log-explorer/issues) 和 Pull Request 反馈与贡献。反馈时请提供浏览器、固件/日志格式和复现步骤；示例日志建议使用模拟或脱敏数据。
