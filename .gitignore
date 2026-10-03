@@ -1,6 +1,7 @@
 node_modules/
 preview.png
 range-preview.png
+chart-preview.png
 github-proof.png
 *.BIN
 *.bin

@@ -1,8 +1,8 @@
 # Flight Log Explorer / (飞行日志可视化工具)
 
-An offline, browser-based ArduPilot flight log explorer. Version 0.3.
+An offline, browser-based ArduPilot flight log explorer. Version 0.4.
 
-本地离线运行的 ArduPilot 飞行日志交互工具，版本 v0.3。
+本地离线运行的 ArduPilot 飞行日志交互工具，版本 v0.4。
 
 ## Quick start / 快速开始
 
@@ -29,9 +29,23 @@ Drag horizontally across the speed/height timeline to select a time range. Drag 
 
 在地速/高度时间曲线上横向拖动即可框选范围。拖动绿色边界调整范围，或输入起始/结束秒数。单击曲线定位当前范围内的回放游标；双击曲线或点击「恢复全选」还原完整日志。每次成功导入均默认全选。
 
-The track, hover targets, point details, mode legend, summary statistics, playback slider, and PNG export are limited to the selected GPS samples. The timeline keeps the full-log time axis for selecting another range, but hides curves outside the selection. Profiles are normalized independently using the active range. Boundaries snap to the nearest recorded GPS sample; the displayed boundary times show the actual selected samples, including when dragging across GPS gaps. A single-point selection is supported and has zero duration and distance.
+The track, hover targets, point details, mode legend, summary statistics, playback slider, and track PNG export are limited to the selected GPS samples. The timeline keeps the full-log time axis and all speed/height curves visible, with shading and green boundaries highlighting the active range. Overview profiles remain independently normalized against the full log. Boundaries snap to the nearest recorded GPS sample; the displayed boundary times show the actual selected samples, including when dragging across GPS gaps. A single-point selection is supported and has zero duration and distance.
 
-轨迹、悬停目标、定位点详情、模式图例、统计、回放滑块和 PNG 导出均限定到所选 GPS 采样点。时间曲线保留完整日志的时间轴用于重新框选，但隐藏区间外曲线；曲线按当前范围各自归一化。边界吸附到最近的 GPS 记录点，显示的是实际选中点的时间，跨 GPS 空白区框选时也遵循此规则。支持单点范围，其时长和距离为零。
+轨迹、悬停目标、定位点详情、模式图例、统计、回放滑块和轨迹 PNG 导出均限定到所选 GPS 采样点。时间轴始终显示完整日志的地速/高度曲线，用遮罩和绿色边界突出选中范围；概览曲线保持按完整日志各自归一化。边界吸附到最近的 GPS 记录点，显示的是实际选中点的时间，跨 GPS 空白区框选时也遵循此规则。支持单点范围，其时长和距离为零。
+
+### Custom parameter images / 自定义参数图像
+
+Scroll below the track to **生成参数图像**. Select a parameter for each curve and click **＋ 叠加参数** to add up to six curves. Defaults are ground speed and height relative to home. Available numeric parameters include speed, altitude, attitude, voltage, satellites, HDOP, and the imported log's throttle, current, vibration, navigation, control, and sensor fields. Sensor instances are labeled separately.
+
+向下滚动到「生成参数图像」。选择每条曲线的纵轴参数，点击「＋ 叠加参数」增加曲线，最多 6 条。默认显示地速与相对起飞点高度。可选数值参数包括速度、高度、姿态、电压、卫星数、HDOP，以及导入日志中的油门、电流、振动、导航、控制和传感器字段；多传感器实例分别标注。
+
+The horizontal axis is elapsed log time in seconds. Same-unit curves share a vertical axis; different units receive separate axes with their actual values. A normalized mode maps each curve's range to 0–100% for trend comparisons (constant curves appear at 50%). Unknown-unit raw fields receive separate axes. **数据范围** defaults to the selected range and may be switched to the full GPS time span. Changing the range or configuration updates the image automatically; **生成图像** regenerates it, and **导出图像 PNG** saves the complete chart with labels and a legend.
+
+横轴为日志相对时间（秒）。同单位共用纵轴，不同单位分别显示实际值纵轴；归一化模式将每条曲线映射到 0–100% 以比较趋势，常量曲线显示在 50%。未知单位的原始字段单独分轴。「数据范围」默认为框选范围，也可改为完整 GPS 时间范围。范围或配置变更后自动更新；「生成图像」重新生成，「导出图像 PNG」保存包含标签和图例的完整图表。
+
+Additional message fields preserve their original sample timestamps and rates, so high-rate peaks are not resampled onto GPS points. Default common fields use the GPS-aligned point data; choose their raw message equivalents to inspect native rates. Missing values or sample gaps over three seconds break curves. Parameters without data in the chosen window are identified in the legend. On mobile, the chart can be scrolled horizontally.
+
+附加消息字段保留原始采样时间与频率，不重采样到 GPS 点，避免遗漏高频峰值。常用默认字段使用已按 GPS 时间匹配的点数据；查看原始频率时可选择对应的原始消息字段。缺失值或超过 3 秒的采样间隔断线，范围内无数据的参数在图例标注。移动端图表支持横向滚动。
 
 Elapsed/log timestamps remain tied to the original log. Summary duration is the difference between the selected endpoint timestamps, and distance includes only connected segments within the selection. Mode and preceding telemetry still use the original time-alignment rules so that a mode activated before the selected range remains correctly identified.
 
@@ -84,9 +98,11 @@ BIN 根据内嵌 `FMT` 定义解码，字段格式参考上述 ArduPilot 源文�
 | `index.html` | Application entry / 工具入口 |
 | `log-parser.js` | DataFlash decoding and time alignment / DataFlash 解码与时间关联 |
 | `app.js` | Canvas rendering, interactions, and import / Canvas 绘图、交互与导入 |
+| `charts.js` | Custom parameter charts and PNG export / 自定义参数图像及 PNG 导出 |
 | `style.css` | Interface styling / 界面样式 |
 | `test-parser.cjs` | Parser verification / 解析验证 |
 | `check-ui.cjs` | Browser interaction verification / 浏览器交互验证 |
+| `check-charts.cjs` | Timeline context and parameter chart verification / 全时间轴与参数图像验证 |
 
 An inline Web Worker runs parsing in the background, including when opened directly from disk. Older browsers without Web Worker support fall back to the main thread. Runtime use requires no development dependencies.
 
@@ -110,6 +126,7 @@ For browser checks / 浏览器验证：
 npm install --no-save playwright
 npx playwright install chromium
 node check-ui.cjs
+node check-charts.cjs
 ```
 
 Checks use the simulated example by default. Set `BROWSER_CHANNEL=msedge` to use an installed Microsoft Edge, or `FLIGHT_LOG_DIR` to test the original BIN fixture. These checks cover hover, click, zoom, seeking, playback, PNG export, import-error handling, and mobile layout.
