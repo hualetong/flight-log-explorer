@@ -57,9 +57,13 @@ Drag the white vertical playhead to seek within the selected range. The pointer 
 
 拖动白色时间竖线可调整当前范围内的进度。距离竖线不超过 8 个 CSS 像素时显示抓取光标，拖动暂停回放，并同步更新轨迹定位点、滑块与详情。竖线与绿色边界重叠时，拖动顶部小三角调整进度，拖动绿色手柄区域调整范围。
 
-The track, hover targets, point details, mode legend, summary statistics, playback slider, and track PNG export are limited to the selected GPS samples. The timeline keeps the full-log time axis and all speed/height curves visible, with shading and green boundaries highlighting the active range. Overview profiles remain independently normalized against the full log. Boundaries snap to the nearest recorded GPS sample; the displayed boundary times show the actual selected samples, including when dragging across GPS gaps. A single-point selection is supported and has zero duration and distance.
+Hold **Ctrl** and scroll over the timeline to zoom in/out around the time under the pointer. Zoom changes only the visible time window, preserving the selected range, playback position and parameter charts. Visible boundaries and the playhead remain draggable at the new scale. Use **还原缩放 / Reset zoom** to restore the full timeline; importing a new log also resets zoom. Without Ctrl, the wheel scrolls the page normally.
 
-轨迹、悬停目标、定位点详情、模式图例、统计、回放滑块和轨迹 PNG 导出均限定到所选 GPS 采样点。时间轴始终显示完整日志的地速/高度曲线，用遮罩和绿色边界突出选中范围；概览曲线保持按完整日志各自归一化。边界吸附到最近的 GPS 记录点，显示的是实际选中点的时间，跨 GPS 空白区框选时也遵循此规则。支持单点范围，其时长和距离为零。
+在时间轴上按住 **Ctrl** 滚动滚轮，可围绕鼠标所在时间点放大或缩小。缩放仅改变可见时间窗口，保留框选范围、进度及参数图像；可见边界和进度竖线仍可按新比例拖动。点击「还原缩放」恢复完整时间轴，导入新日志也会还原缩放。未按 Ctrl 时，滚轮正常滚动页面。
+
+The track, hover targets, point details, mode legend, summary statistics, playback slider, and track PNG export are limited to the selected GPS samples. By default, the timeline shows the full log and all speed/height curves, with shading and green boundaries highlighting the active range. Ctrl-wheel zoom changes the visible time window independently. Overview profiles remain independently normalized against the full log. Boundaries snap to the nearest recorded GPS sample; the displayed boundary times show the actual selected samples, including when dragging across GPS gaps. A single-point selection is supported and has zero duration and distance.
+
+轨迹、悬停目标、定位点详情、模式图例、统计、回放滑块和轨迹 PNG 导出均限定到所选 GPS 采样点。时间轴默认显示完整日志的地速/高度曲线，用遮罩和绿色边界突出选中范围；Ctrl＋滚轮可独立调整可见时间窗口；概览曲线保持按完整日志各自归一化。边界吸附到最近的 GPS 记录点，显示的是实际选中点的时间，跨 GPS 空白区框选时也遵循此规则。支持单点范围，其时长和距离为零。
 
 ### Custom parameter images / 自定义参数图像
 
@@ -134,6 +138,7 @@ BIN 根据内嵌 `FMT` 定义解码，字段格式参考上述 ArduPilot 源文�
 | `i18n.js` | UI and canvas localization / 界面与图像文字翻译 |
 | `check-language.cjs` | Language persistence and state preservation checks / 语言记忆与状态保留验证 |
 | `check-playhead.cjs` | Playhead dragging and range clamping checks / 进度竖线拖动与范围限制验证 |
+| `check-timeline-zoom.cjs` | Pointer-anchored timeline zoom and zoomed dragging checks / 鼠标焦点时间轴缩放与拖动验证 |
 
 An inline Web Worker runs parsing in the background, including when opened directly from disk. Older browsers without Web Worker support fall back to the main thread. Runtime use requires no development dependencies.
 
@@ -160,6 +165,7 @@ node check-ui.cjs
 node check-charts.cjs
 node check-language.cjs
 node check-playhead.cjs
+node check-timeline-zoom.cjs
 ```
 
 Checks use the simulated example by default. Set `BROWSER_CHANNEL=msedge` to use an installed Microsoft Edge, or `FLIGHT_LOG_DIR` to test the original BIN fixture. These checks cover hover, click, zoom, seeking, playback, PNG export, import-error handling, and mobile layout.

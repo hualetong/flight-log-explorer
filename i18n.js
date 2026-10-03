@@ -13,7 +13,7 @@ const translations={
  '▶ 回放':'▶ Play','Ⅱ 暂停':'Ⅱ Pause','轨迹时间':'Track time','回放倍速':'Playback speed',
  '时间范围选择：拖动竖线调整进度，靠近两侧边界调整范围，双击恢复全选':'Timeline: drag the playhead to seek, drag near either edge to adjust the range, double-click to select all',
  '默认全选 · 靠近两侧边界拖动调整范围':'All selected by default · Drag near either edge to adjust the range',
- '起始秒':'Start (s)','结束秒':'End (s)','恢复全选':'Select all','拖动竖线调整进度 · 边界调整范围 · 双击全选':'Drag playhead to seek · Edges adjust range · Double-click for all',
+ '起始秒':'Start (s)','结束秒':'End (s)','恢复全选':'Select all','还原缩放':'Reset zoom','Ctrl＋滚轮缩放 · 鼠标位置为焦点 · 拖动竖线调整进度 · 边界调整范围 · 双击全选':'Ctrl + wheel to zoom at pointer · Drag playhead to seek · Edges adjust range · Double-click for all',
  '定位点详情':'Point details','等待数据':'Awaiting data','读图说明':'How to read the track',
  '轨迹颜色对应飞行模式。悬停优先选择最近的轨迹点；轨迹交叉时，可用时间滑块定位具体时刻。':'Track colors indicate flight modes. Hover selects the nearest point; use the time slider to distinguish crossing tracks.',
  '海拔来自 GPS，相对高度来自 POS.RelHomeAlt。附加消息按时间向前匹配，超过 2 秒显示缺失值。GPS 失锁或间隔超过 3 秒时断开连线。':'Altitude comes from GPS; relative height comes from POS.RelHomeAlt. Auxiliary values use the latest preceding sample within 2 seconds. Lines break on GPS fix loss or gaps over 3 seconds.',
