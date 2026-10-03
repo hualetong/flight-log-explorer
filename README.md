@@ -53,6 +53,10 @@ Move within 10 CSS pixels of either green boundary on the speed/height timeline,
 
 在地速/高度时间曲线上，光标距离绿色左右边界不超过 10 个 CSS 像素时，光标变为横向调整样式，此时可拖动调整范围；其他位置拖动不会改变范围。也可输入起始/结束秒数。双击曲线或点击「恢复全选」还原完整日志。每次成功导入均默认全选。
 
+Drag the white vertical playhead to seek within the selected range. The pointer becomes a grab cursor within 8 CSS pixels of the line; dragging pauses playback and updates the track marker, slider and point details. If the playhead overlaps a green range edge, use the small triangle at the top to seek, or the green handle area to adjust the range.
+
+拖动白色时间竖线可调整当前范围内的进度。距离竖线不超过 8 个 CSS 像素时显示抓取光标，拖动暂停回放，并同步更新轨迹定位点、滑块与详情。竖线与绿色边界重叠时，拖动顶部小三角调整进度，拖动绿色手柄区域调整范围。
+
 The track, hover targets, point details, mode legend, summary statistics, playback slider, and track PNG export are limited to the selected GPS samples. The timeline keeps the full-log time axis and all speed/height curves visible, with shading and green boundaries highlighting the active range. Overview profiles remain independently normalized against the full log. Boundaries snap to the nearest recorded GPS sample; the displayed boundary times show the actual selected samples, including when dragging across GPS gaps. A single-point selection is supported and has zero duration and distance.
 
 轨迹、悬停目标、定位点详情、模式图例、统计、回放滑块和轨迹 PNG 导出均限定到所选 GPS 采样点。时间轴始终显示完整日志的地速/高度曲线，用遮罩和绿色边界突出选中范围；概览曲线保持按完整日志各自归一化。边界吸附到最近的 GPS 记录点，显示的是实际选中点的时间，跨 GPS 空白区框选时也遵循此规则。支持单点范围，其时长和距离为零。
@@ -129,6 +133,7 @@ BIN 根据内嵌 `FMT` 定义解码，字段格式参考上述 ArduPilot 源文�
 | `check-charts.cjs` | Timeline context and parameter chart verification / 全时间轴与参数图像验证 |
 | `i18n.js` | UI and canvas localization / 界面与图像文字翻译 |
 | `check-language.cjs` | Language persistence and state preservation checks / 语言记忆与状态保留验证 |
+| `check-playhead.cjs` | Playhead dragging and range clamping checks / 进度竖线拖动与范围限制验证 |
 
 An inline Web Worker runs parsing in the background, including when opened directly from disk. Older browsers without Web Worker support fall back to the main thread. Runtime use requires no development dependencies.
 
@@ -154,6 +159,7 @@ npx playwright install chromium
 node check-ui.cjs
 node check-charts.cjs
 node check-language.cjs
+node check-playhead.cjs
 ```
 
 Checks use the simulated example by default. Set `BROWSER_CHANNEL=msedge` to use an installed Microsoft Edge, or `FLIGHT_LOG_DIR` to test the original BIN fixture. These checks cover hover, click, zoom, seeking, playback, PNG export, import-error handling, and mobile layout.
