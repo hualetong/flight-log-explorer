@@ -1,6 +1,7 @@
 'use strict';
 // UI translations retain the original Chinese text; imported telemetry is never rewritten.
 const translations={
+ '当前级别底图不可用：已自动使用较低级别底图，轨迹缩放保持不变。':'Tiles at this level are unavailable: using a lower-resolution basemap without changing track zoom.',
  '在线地图底图':'Online basemap','地图底图类型':'Basemap type','卫星影像 · Esri':'Satellite imagery · Esri','街道地图 · Esri':'Street map · Esri','重试地图':'Retry map',
  '底图默认关闭，开启后需要互联网连接。':'Basemap is off by default; internet is required when enabled.',
  '日志仍在本机解析；开启底图将向地图服务请求当前区域的瓦片，对方可获知浏览区域和 IP。':'Logs remain local. Enabling the basemap requests tiles from the map service, which can see the viewed area and your IP.',

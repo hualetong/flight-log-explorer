@@ -130,6 +130,10 @@ Tiles come from Esri's public [World Imagery](https://server.arcgisonline.com/Ar
 
 底图来自 Esri 公共 World Imagery / World Street Map 服务，地图及 PNG 均显示来源署名。项目 MIT 许可适用于项目代码，地图影像遵循 Esri 服务条款及其数据供应商的权利；不提供批量下载或离线地图包。
 
+Satellite imagery and street maps have different detailed coverage. Some areas have no street tiles at high zoom levels, even if imagery is available. Requests use `blankTile=false` to distinguish missing tiles from placeholder images, as documented by [Esri's Map Tile API](https://developers.arcgis.com/rest/services-reference/enterprise/map-tile/). Missing/unavailable tiles automatically use the corresponding cropped parent tile at a lower resolution, checking at most eight parent levels. This also handles missing-tile responses whose absent CORS headers prevent reading their HTTP status. Track zoom, coordinates, selection and progress stay unchanged, and a status message explains the reduced basemap detail. If parent tiles are also unavailable, use the retry flow.
+
+卫星影像与街道图的详细级别覆盖不同，某些地区即使有卫星影像，也没有高缩放级别街道瓦片。请求通过 `blankTile=false` 区分缺失瓦片与占位图片；缺失或不可用时自动使用低级别父瓦片的对应裁剪区域，最多检查八个父级，同时处理缺失响应没有 CORS 头而无法读取 HTTP 状态的情况。保持轨迹缩放、坐标、范围与进度不变，并提示底图细节受限。父级也不可用时可通过「重试地图」重试。放大低级别瓦片无法增加服务本身没有提供的街道细节。
+
 ### Projection and profiles / 投影与曲线
 
 The offline plot uses a local east/north approximation centered on the first point, suitable for flights around a field. Online maps use the same WGS84 GPS coordinates projected to Web Mercator, with longitude wrapping for crossing the date line. Map and track share one transform, so pan/zoom and hover stay aligned. Mercator clamps latitude to ±85.0511°; the plotted meter grid is scaled at the first point and is approximate away from it. Distance statistics retain the original local GPS calculation. Speed and relative-height profiles are normalized independently to show trends; inspect point details for exact values.
@@ -161,6 +165,7 @@ BIN 根据内嵌 `FMT` 定义解码，字段格式参考上述 ArduPilot 源文�
 | `check-timeline-edges.cjs` | Endpoint dragging at fractional widths / 小数宽度下的左右边界拖动验证 |
 | `online-map.js` | Optional raster tiles and Mercator overlay / 可选栅格底图与 Mercator 叠加 |
 | `check-map.cjs` | Opt-in loading, projection, export, retry and offline checks with mock tiles / 模拟瓦片验证可选加载、投影、导出、重试及断网 |
+| `check-map-fallback.cjs` | Missing detailed tiles and parent-tile crop fallback / 详细瓦片缺失与父级裁剪回退验证 |
 
 An inline Web Worker runs parsing in the background, including when opened directly from disk. Older browsers without Web Worker support fall back to the main thread. Runtime use requires no development dependencies.
 
@@ -190,6 +195,7 @@ node check-playhead.cjs
 node check-timeline-zoom.cjs
 node check-timeline-edges.cjs
 node check-map.cjs
+node check-map-fallback.cjs
 ```
 
 Checks use the simulated example by default. Set `BROWSER_CHANNEL=msedge` to use an installed Microsoft Edge, or `FLIGHT_LOG_DIR` to test the original BIN fixture. These checks cover hover, click, zoom, seeking, playback, PNG export, import-error handling, and mobile layout.
