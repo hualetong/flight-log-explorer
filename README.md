@@ -1,8 +1,8 @@
 # Flight Log Explorer / (飞行日志可视化工具)
 
-An offline, browser-based ArduPilot flight log explorer. Version 0.4.
+An offline, browser-based ArduPilot flight log explorer. The main branch now supports Chinese and English; the v0.4 release ZIP predates language switching.
 
-本地离线运行的 ArduPilot 飞行日志交互工具，版本 v0.4。
+本地离线运行的 ArduPilot 飞行日志交互工具。main 分支现已支持中英文切换；v0.4 发布包尚不包含语言切换。
 
 [Download v0.4 / 下载 v0.4](https://github.com/hualetong/flight-log-explorer/releases/tag/v0.4) · [Release notes / 更新说明](docs/RELEASE-v0.4.md) · [MIT License / 开源许可](LICENSE)
 
@@ -26,9 +26,9 @@ Try **查看示例轨迹** on the start screen, or import [simulated-flight.json
 
 ## Quick start / 快速开始
 
-Download or clone this repository, then double-click `index.html`. Click **导入飞行日志** (Import flight log), or drag a log file onto the page. No installation, server, or internet connection is required. Logs are parsed locally and are never uploaded. The current application interface is in Chinese.
+Download or clone this repository, then double-click `index.html`. Click **导入飞行日志** (Import flight log), or drag a log file onto the page. No installation, server, or internet connection is required. Logs are parsed locally and are never uploaded. Use the **中文 / English** selector at the top right to switch languages. Chinese is the default; your choice is saved locally. Switching preserves the imported log, time selection and parameter choices. Charts and exported image labels follow the selected language; log field identifiers and imported text remain as recorded.
 
-下载或克隆仓库后，双击 `index.html`。点击「导入飞行日志」，或将日志文件拖入页面。无需安装依赖、启动服务或联网；日志只在本机解析，不会上传。当前工具界面为中文。
+下载或克隆仓库后，双击 `index.html`。点击「导入飞行日志」，或将日志文件拖入页面。无需安装依赖、启动服务或联网；日志只在本机解析，不会上传。右上角「中文 / English」可切换语言，默认中文，选择保存在本机。切换保留当前日志、框选范围和参数选择；图表与导出图像标签跟随语言，日志字段标识及原始文字保持日志内容。
 
 For the release ZIP, extract the entire archive first and keep the HTML, JavaScript, and CSS files together. Open the extracted `index.html` in a modern desktop browser such as Edge or Chrome.
 
@@ -127,6 +127,8 @@ BIN 根据内嵌 `FMT` 定义解码，字段格式参考上述 ArduPilot 源文�
 | `test-parser.cjs` | Parser verification / 解析验证 |
 | `check-ui.cjs` | Browser interaction verification / 浏览器交互验证 |
 | `check-charts.cjs` | Timeline context and parameter chart verification / 全时间轴与参数图像验证 |
+| `i18n.js` | UI and canvas localization / 界面与图像文字翻译 |
+| `check-language.cjs` | Language persistence and state preservation checks / 语言记忆与状态保留验证 |
 
 An inline Web Worker runs parsing in the background, including when opened directly from disk. Older browsers without Web Worker support fall back to the main thread. Runtime use requires no development dependencies.
 
@@ -151,6 +153,7 @@ npm install --no-save playwright
 npx playwright install chromium
 node check-ui.cjs
 node check-charts.cjs
+node check-language.cjs
 ```
 
 Checks use the simulated example by default. Set `BROWSER_CHANNEL=msedge` to use an installed Microsoft Edge, or `FLIGHT_LOG_DIR` to test the original BIN fixture. These checks cover hover, click, zoom, seeking, playback, PNG export, import-error handling, and mobile layout.

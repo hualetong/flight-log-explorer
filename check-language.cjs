@@ -1,0 +1,33 @@
+'use strict';
+const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path');
+(async()=>{const browser=await chromium.launch({headless:true,channel:process.env.BROWSER_CHANNEL||'msedge'});try{
+ const page=await browser.newPage({viewport:{width:1440,height:1050}}),errors=[];
+ page.on('pageerror',e=>errors.push(e.message));await page.goto(require('node:url').pathToFileURL(path.join(__dirname,'index.html')).href);
+ await page.locator('#demo').click();await page.evaluate(()=>applyRange(250,850));
+ await page.locator('#chart-add').click();await page.getByLabel('纵轴参数 3',{exact:true}).selectOption('voltage');
+ const state=await page.evaluate(()=>({range:[rangeStart,rangeEnd],selected,fields:[...chosen],curves:[...chartSelections]}));
+ await page.locator('#language').selectOption('en');await page.getByRole('button',{name:'Fit track',exact:true}).waitFor();
+ assert.equal(await page.locator('html').getAttribute('lang'),'en');
+ assert.deepEqual(await page.evaluate(()=>({range:[rangeStart,rangeEnd],selected,fields:[...chosen],curves:[...chartSelections]})),state);
+ assert.match(await page.locator('#range-label').innerText(),/Selected range/);
+ assert.match(await page.locator('#details').innerText(),/Ground speed/);
+ await page.getByRole('button',{name:'Display information',exact:true}).click();
+ await page.getByRole('searchbox',{name:'Search display information'}).fill('throttle');
+ await page.getByText('Throttle output',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Close display information'}).click();
+ const untranslated=await page.evaluate(()=>{const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),found=[];while(w.nextNode()){const n=w.currentNode;if(n.parentElement.closest('script,style,#filename,#language,#details strong,#tip'))continue;if(/\p{Script=Han}/u.test(n.data))found.push(n.data);}return found;});
+ assert.deepEqual(untranslated,[],'English UI should have no untranslated Chinese text');
+ // Capture actual text passed to the canvas, including PNG footer and axis labels.
+ const canvasText=await page.evaluate(()=>{const original=CanvasRenderingContext2D.prototype.fillText,texts=[];CanvasRenderingContext2D.prototype.fillText=function(text,...args){texts.push(text);return original.call(this,text,...args);};draw();generateChart();CanvasRenderingContext2D.prototype.fillText=original;return texts;});
+ assert.ok(canvasText.includes('Flight parameters over time'));assert.ok(canvasText.includes('Elapsed time (s)'));
+ assert.equal(canvasText.filter(s=>/\p{Script=Han}/u.test(s)&&!s.includes('模拟示例')).length,0);
+ const download=page.waitForEvent('download');await page.getByRole('button',{name:'Export chart PNG',exact:true}).click();assert.equal((await download).suggestedFilename(),'flight-parameters.png');
+ await page.screenshot({path:'test-results/english-preview.png',fullPage:true});
+ await page.locator('#language').selectOption('zh-CN');await page.getByRole('button',{name:'适应轨迹',exact:true}).waitFor();
+ assert.match(await page.locator('#details').innerText(),/地速/);assert.deepEqual(await page.evaluate(()=>[rangeStart,rangeEnd]),state.range);
+ await page.locator('#language').selectOption('en');await page.reload();await page.getByRole('button',{name:'Explore demo',exact:true}).waitFor();assert.equal(await page.locator('#language').inputValue(),'en');
+ await page.locator('#file').setInputFiles({name:'invalid.json',mimeType:'application/json',buffer:Buffer.from('{}')});await page.waitForFunction(()=>document.querySelector('#status').className==='error');
+ assert.match(await page.locator('#status').innerText(),/Import failed:.*No valid GPS points/);
+ await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+ assert.deepEqual(errors,[]);console.log('PASS: live bilingual UI, state retention, English field search, translated canvas/PNG, reload persistence, import errors and mobile layout.');
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

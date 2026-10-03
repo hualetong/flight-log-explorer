@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>飞行日志 · 轨迹工作台</title><link rel="stylesheet" href="style.css"></head>
 <body>
-<header><div class="brand"><span class="logo">↗</span><div><h1>飞行轨迹工作台</h1><p>FLIGHT LOG EXPLORER / 本地日志分析</p></div></div><label class="import">＋ 导入飞行日志<input id="file" type="file" accept=".bin,.json"></label></header>
+<header><div class="brand"><span class="logo">↗</span><div><h1>飞行轨迹工作台</h1><p>FLIGHT LOG EXPLORER / 本地日志分析</p></div></div><div class="header-actions"><select id="language" aria-label="Language / 语言"><option value="zh-CN">中文</option><option value="en">English</option></select><label class="import">＋ 导入飞行日志<input id="file" type="file" accept=".bin,.json"></label></div></header>
 <main>
 <section class="summary"><div><small>当前日志</small><strong id="filename">等待导入</strong></div><div><small>当前范围时长</small><strong id="duration">—</strong></div><div><small>轨迹距离</small><strong id="distance">—</strong></div><div><small>最大地速</small><strong id="maxspeed">—</strong></div><div><small>有效定位点</small><strong id="count">—</strong></div></section>
 <div id="status" role="status">所有日志均在本机解析。支持 ArduPilot .BIN 和包含 GPS / MODE / POS 数组的 JSON。</div>
@@ -15,4 +15,4 @@
 </main>
 <dialog id="field-dialog" aria-labelledby="field-title"><div class="field-header"><div><h2 id="field-title">选择显示信息</h2><p>勾选项同步显示在悬停提示和定位点详情。</p></div><button id="field-close" aria-label="关闭显示信息选择">✕</button></div><input id="field-search" type="search" placeholder="搜索名称或字段，如油门、VIBE、GPS.VZ" aria-label="搜索显示信息"><div class="field-actions"><button id="field-default">恢复默认</button><button id="field-clear">全部取消</button><span id="field-count"></span></div><div id="field-options"></div><p class="field-help">默认项无需导入即可选择；更多字段在导入后出现。附加值按时间向前匹配（最长 2 秒），MODE 使用最近变更。原始字段按日志格式解码，未注明单位的值请结合字段定义解读。</p></dialog>
 <footer>FLIGHT LOG EXPLORER <span>离线可用 · 日志不会上传 · v0.4</span></footer>
-<script src="log-parser.js"></script><script src="demo-log.js"></script><script src="app.js"></script><script src="charts.js"></script></body></html>
+<script src="i18n.js"></script><script src="log-parser.js"></script><script src="demo-log.js"></script><script src="app.js"></script><script src="charts.js"></script></body></html>
