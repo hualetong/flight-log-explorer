@@ -1,8 +1,8 @@
 # Flight Log Explorer / (飞行日志可视化工具)
 
-An offline, browser-based ArduPilot flight log explorer. The main branch now supports Chinese and English; the v0.4 release ZIP predates language switching.
+An offline-capable, browser-based ArduPilot flight log explorer with optional online basemaps. The main branch supports Chinese/English, timeline zoom and online maps; the v0.4 release ZIP predates these additions.
 
-本地离线运行的 ArduPilot 飞行日志交互工具。main 分支现已支持中英文切换；v0.4 发布包尚不包含语言切换。
+本地离线运行、可选联网底图的 ArduPilot 飞行日志交互工具。main 分支现已支持中英文切换、时间轴缩放和在线地图；v0.4 发布包尚不包含这些新增功能。
 
 [Download v0.4 / 下载 v0.4](https://github.com/hualetong/flight-log-explorer/releases/tag/v0.4) · [Release notes / 更新说明](docs/RELEASE-v0.4.md) · [MIT License / 开源许可](LICENSE)
 
@@ -19,6 +19,10 @@ All previews use synthetic data with artificial coordinates, relative timestamps
 ![Time selection with full timeline context / 时间框选与完整时间轴](docs/images/range-selection.png)
 
 ![Multiple parameters and unit axes / 多参数叠加与单位分轴](docs/images/parameter-chart.png)
+
+Synthetic flight over a generic demonstration location, with optional online imagery / 人工生成的示例轨迹与在线卫星影像叠加：
+
+![Optional online basemap / 可选在线底图](docs/images/online-map.png)
 
 Try **查看示例轨迹** on the start screen, or import [simulated-flight.json](examples/simulated-flight.json). Download the JSON using GitHub's **Download raw file** button. The 200-second sample contains 1,001 GPS points, FBWA/AUTO/RTL modes, height, attitude, airspeed, battery, throttle, and vibration data. This is a demonstration fixture, not a navigation dataset.
 
@@ -38,6 +42,7 @@ For the release ZIP, extract the entire archive first and keep the HTML, JavaScr
 
 | Feature | 功能说明 |
 | --- | --- |
+| Optional Esri satellite imagery or street map beneath the existing mode-colored track; pan, zoom, hover, time filtering and PNG export remain available. | 可选 Esri 卫星影像或街道底图，与现有模式着色轨迹叠加，继续支持平移、缩放、悬停、时间筛选和 PNG 导出。 |
 | Import ArduPilot DataFlash `.BIN` files or parsed JSON containing message arrays such as `GPS`, `MODE`, and `POS`. PX4 ULog and MAVLink tlog are not supported. | 导入 ArduPilot DataFlash `.BIN` 或包含 `GPS`、`MODE`、`POS` 等消息数组的 JSON。不支持 PX4 ULog 和 MAVLink tlog。 |
 | North-up, equal-scale east/north track in meters, colored by flight mode, with start/end markers. Zoom with the wheel, drag to pan, and use **适应轨迹** to fit the track. | 北向上、等比例东/北米制轨迹，按模式着色并标记起终点。滚轮缩放、拖动平移，「适应轨迹」复位。 |
 | Hover to inspect the nearest recorded point: mode, ground speed, GPS altitude, height relative to home, airspeed, coordinates, attitude, satellites, and voltage. Click to select its time. | 悬停查看最近记录点的模式、地速、GPS 海拔、相对起飞点高度、空速、经纬度、姿态、卫星和电压；点击定位时间。 |
@@ -111,11 +116,25 @@ Vehicle type is detected from `ArduPlane`, `ArduCopter`, or `ArduRover` in `MSG`
 
 根据 `MSG` 中的 `ArduPlane`、`ArduCopter` 或 `ArduRover` 自动识别机型；无法识别时，在图上方手动选择。未知模式或未覆盖的编号保留数字显示。
 
+### Online basemap / 在线地图底图
+
+Above the track, enable **在线地图底图 / Online basemap**, then choose **Satellite imagery** or **Street map**. Maps are off by default on every page load; no external requests are made while maps are off. Only visible tiles are requested, with limited concurrent loads and an in-memory cache. The service can be unavailable or restricted by network conditions; failed tiles leave the track usable and can be retried. Turning the basemap off restores the offline grid. Cached tiles may remain visible after a connection loss; uncached areas need internet access.
+
+在轨迹上方勾选「在线地图底图」，选择卫星影像或街道地图。每次打开页面默认关闭底图；关闭时不发送地图请求。仅请求可见瓦片，限制并发并使用内存缓存。服务可能受网络影响而不可用；失败时轨迹仍可操作，可点击「重试地图」。关闭底图恢复离线网格。断网后已加载瓦片可以继续显示，未缓存区域需要网络。
+
+**Privacy:** log files, full coordinates and telemetry arrays are not uploaded. Enabling maps sends tile requests to `server.arcgisonline.com`; the tile indices identify the viewed geographic area, and the provider can see your IP and normal request metadata. Leave maps off to retain fully offline operation.
+
+**隐私：**不会上传日志文件、完整经纬度列表或遥测数组。开启底图后会向 `server.arcgisonline.com` 请求瓦片；瓦片索引可反映正在浏览的地理区域，服务方可获知 IP 和普通请求信息。如需全程离线，请保持底图关闭。
+
+Tiles come from Esri's public [World Imagery](https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer) and [World Street Map](https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer) services. Source attribution is visible on the map and in exported PNGs, following [Esri attribution guidance](https://doc.arcgis.com/en/arcgis-online/reference/display-copyrights.htm). The project's MIT license covers project code; map imagery remains subject to [Esri service terms](https://www.esri.com/en-us/legal/terms/web-site-service) and its data providers' rights. No bulk tile download or offline map package is provided.
+
+底图来自 Esri 公共 World Imagery / World Street Map 服务，地图及 PNG 均显示来源署名。项目 MIT 许可适用于项目代码，地图影像遵循 Esri 服务条款及其数据供应商的权利；不提供批量下载或离线地图包。
+
 ### Projection and profiles / 投影与曲线
 
-The plot uses a local east/north approximation centered on the first point, suitable for flights around a field. Long-distance routes need a geographic map projection. Version 0.1 has no online basemap. Speed and relative-height profiles are normalized independently to show trends; inspect point details for exact values.
+The offline plot uses a local east/north approximation centered on the first point, suitable for flights around a field. Online maps use the same WGS84 GPS coordinates projected to Web Mercator, with longitude wrapping for crossing the date line. Map and track share one transform, so pan/zoom and hover stay aligned. Mercator clamps latitude to ±85.0511°; the plotted meter grid is scaled at the first point and is approximate away from it. Distance statistics retain the original local GPS calculation. Speed and relative-height profiles are normalized independently to show trends; inspect point details for exact values.
 
-俯视图采用以首点为原点的局部东/北近似投影，适合场地飞行；长距离航线需要扩展为地理地图投影。初版没有在线地图底图。地速和相对高度曲线各自归一化显示趋势，精确值见定位点详情。
+离线俯视图采用以首点为原点的局部东/北近似投影，适合场地飞行。在线地图将相同 WGS84 GPS 坐标投影到 Web Mercator，跨日期变更线时处理经度回绕；地图和轨迹共用坐标变换，平移、缩放和悬停保持对齐。Mercator 纬度限制为 ±85.0511°；米制网格按首点纬度换算，远离首点时为近似值。距离统计仍采用原有局部 GPS 计算。地速和相对高度曲线各自归一化显示趋势，精确值见定位点详情。
 
 ### Binary decoding / 二进制解析
 
@@ -140,6 +159,8 @@ BIN 根据内嵌 `FMT` 定义解码，字段格式参考上述 ArduPilot 源文�
 | `check-playhead.cjs` | Playhead dragging and range clamping checks / 进度竖线拖动与范围限制验证 |
 | `check-timeline-zoom.cjs` | Pointer-anchored timeline zoom and zoomed dragging checks / 鼠标焦点时间轴缩放与拖动验证 |
 | `check-timeline-edges.cjs` | Endpoint dragging at fractional widths / 小数宽度下的左右边界拖动验证 |
+| `online-map.js` | Optional raster tiles and Mercator overlay / 可选栅格底图与 Mercator 叠加 |
+| `check-map.cjs` | Opt-in loading, projection, export, retry and offline checks with mock tiles / 模拟瓦片验证可选加载、投影、导出、重试及断网 |
 
 An inline Web Worker runs parsing in the background, including when opened directly from disk. Older browsers without Web Worker support fall back to the main thread. Runtime use requires no development dependencies.
 
@@ -168,6 +189,7 @@ node check-language.cjs
 node check-playhead.cjs
 node check-timeline-zoom.cjs
 node check-timeline-edges.cjs
+node check-map.cjs
 ```
 
 Checks use the simulated example by default. Set `BROWSER_CHANNEL=msedge` to use an installed Microsoft Edge, or `FLIGHT_LOG_DIR` to test the original BIN fixture. These checks cover hover, click, zoom, seeking, playback, PNG export, import-error handling, and mobile layout.

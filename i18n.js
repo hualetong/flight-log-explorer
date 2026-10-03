@@ -1,6 +1,15 @@
 'use strict';
 // UI translations retain the original Chinese text; imported telemetry is never rewritten.
 const translations={
+ '在线地图底图':'Online basemap','地图底图类型':'Basemap type','卫星影像 · Esri':'Satellite imagery · Esri','街道地图 · Esri':'Street map · Esri','重试地图':'Retry map',
+ '底图默认关闭，开启后需要互联网连接。':'Basemap is off by default; internet is required when enabled.',
+ '日志仍在本机解析；开启底图将向地图服务请求当前区域的瓦片，对方可获知浏览区域和 IP。':'Logs remain local. Enabling the basemap requests tiles from the map service, which can see the viewed area and your IP.',
+ '请先导入日志或查看示例轨迹。':'Import a log or explore the demo first.',
+ '底图已关闭：当前为离线轨迹视图。':'Basemap is off: offline track view.',
+ '网络已断开：保留已加载底图，轨迹仍可使用。':'Offline: loaded tiles are retained; the track remains usable.',
+ '部分地图加载失败，轨迹仍可使用；可点击重试。':'Some map tiles failed; the track remains usable. Use Retry map.',
+ '在线地图已加载。':'Online basemap loaded.','正在加载在线地图…':'Loading online basemap…',
+
  '飞行日志 · 轨迹工作台':'Flight Log Explorer',
  '飞行轨迹工作台':'Flight Log Explorer','本地日志分析':'Local log analysis','＋ 导入飞行日志':'+ Import flight log',
  '当前日志':'Current log','等待导入':'Awaiting import','当前范围时长':'Selected duration','轨迹距离':'Track distance','最大地速':'Max ground speed','有效定位点':'Valid GPS points',

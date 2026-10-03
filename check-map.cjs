@@ -1,0 +1,21 @@
+'use strict';
+const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path');
+let tile;
+(async()=>{const browser=await chromium.launch({headless:true,channel:'msedge'});try{
+ const context=await browser.newContext({viewport:{width:1440,height:1050}}),page=await context.newPage(),errors=[],requests=[];let failing=false;page.on('pageerror',e=>errors.push(e.message));
+ tile=Buffer.from(await page.evaluate(()=>{const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d');g.fillStyle='#3c5564';g.fillRect(0,0,256,256);return c.toDataURL().split(',')[1];}),'base64');
+ await context.route('https://server.arcgisonline.com/**',route=>{requests.push(route.request());return failing?route.abort():route.fulfill({contentType:'image/png',headers:{'access-control-allow-origin':'*'},body:tile});});
+ await page.goto(require('node:url').pathToFileURL(path.join(__dirname,'index.html')).href);await page.locator('#demo').click();assert.equal(requests.length,0,'offline default must not contact map servers');
+ await page.evaluate(()=>{applyRange(200,800);setSelected(400);});const selection=await page.evaluate(()=>[rangeStart,rangeEnd,selected]);await page.locator('#map-enabled').check();await page.waitForFunction(()=>mapVisible.length>0&&mapVisible.every(tile=>tile.state==='loaded'));
+ assert.ok(requests.length>0);assert.ok(requests.every(r=>r.method()==='GET'&&!r.postData()));assert.deepEqual(await page.evaluate(()=>[rangeStart,rangeEnd,selected]),selection);
+ assert.ok(await page.locator('#map-attribution').isVisible());assert.match(await page.locator('#map-attribution').innerText(),/Esri/);
+ // A tile corner and a GPS point at that same coordinate must land on the same pixel.
+ const projection=await page.evaluate(()=>{const p=log.points[400],q=screen(p),x=p.lon*Math.PI/180*mapRadius,y=mercatorY(p.lat);return {actual:q,expected:{x:W/2+((x-mapOrigin.x)*mapOrigin.factor-view.cx)*view.scale,y:H/2-((y-mapOrigin.y)*mapOrigin.factor-view.cy)*view.scale}};});assert.ok(Math.abs(projection.actual.x-projection.expected.x)<1e-6);assert.ok(Math.abs(projection.actual.y-projection.expected.y)<1e-6);
+ const pt=await page.evaluate(()=>{const p=screen(log.points[450]),r=canvas.getBoundingClientRect();return {x:r.x+p.x,y:r.y+p.y};});await page.mouse.move(pt.x,pt.y);assert.ok(await page.evaluate(()=>hover>=rangeStart&&hover<=rangeEnd));
+ const download=page.waitForEvent('download');await page.locator('#export').click();assert.equal((await download).suggestedFilename(),'flight-track.png');assert.equal(await page.evaluate(()=>{try{canvas.toDataURL();return true;}catch{return false;}}),true,'cross-origin tiles must not taint PNG export');
+ await page.locator('#map-provider').selectOption('street');await page.waitForFunction(()=>mapVisible.length>0&&mapVisible.every(tile=>tile.state==='loaded'));assert.ok(requests.some(r=>r.url().includes('World_Street_Map')));
+ await page.locator('#map-enabled').uncheck();const count=requests.length;await page.locator('#fit').click();assert.equal(requests.length,count);assert.equal(await page.locator('#map-attribution').isVisible(),false);
+ failing=true;await page.evaluate(()=>{mapTiles.clear();mapProviders.street.service='Failure_Test';});await page.locator('#map-enabled').check();await page.waitForFunction(()=>mapVisible.some(tile=>tile.state==='error'));assert.match(await page.locator('#map-status').innerText(),/加载失败/);failing=false;await page.locator('#map-retry').click();await page.waitForFunction(()=>mapVisible.every(tile=>tile.state==='loaded'));
+ await context.setOffline(true);await page.waitForFunction(()=>!navigator.onLine);assert.match(await page.locator('#map-status').innerText(),/网络已断开/);assert.deepEqual(await page.evaluate(()=>[rangeStart,rangeEnd,selected]),selection);await page.locator('#map-enabled').uncheck();await page.locator('#fit').click();await context.setOffline(false);
+ await page.locator('#language').selectOption('en');assert.equal(await page.getByText('Online basemap',{exact:true}).count(),1);assert.deepEqual(errors,[]);console.log('PASS: opt-in requests, aligned Mercator overlay, preserved selection, hover, safe PNG, providers, retry, offline fallback and bilingual labels.');
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
