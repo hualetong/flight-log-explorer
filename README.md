@@ -1,10 +1,10 @@
 # Flight Log Explorer / (飞行日志可视化工具)
 
-An offline-capable, browser-based ArduPilot flight log explorer with optional online basemaps. The main branch supports Chinese/English, timeline zoom and online maps; the v0.4 release ZIP predates these additions.
+An offline-capable, browser-based ArduPilot flight log explorer with optional online basemaps. The v0.5 release includes Chinese/English, timeline zoom and online maps.
 
-本地离线运行、可选联网底图的 ArduPilot 飞行日志交互工具。main 分支现已支持中英文切换、时间轴缩放和在线地图；v0.4 发布包尚不包含这些新增功能。
+本地离线运行、可选联网底图的 ArduPilot 飞行日志交互工具。v0.5 发布包已包含中英文切换、时间轴缩放和在线地图。
 
-[Download v0.4 / 下载 v0.4](https://github.com/hualetong/flight-log-explorer/releases/tag/v0.4) · [Release notes / 更新说明](docs/RELEASE-v0.4.md) · [MIT License / 开源许可](LICENSE)
+[Download v0.5 / 下载 v0.5](https://github.com/hualetong/flight-log-explorer/releases/tag/v0.5) · [Release notes / 更新说明](docs/RELEASE-v0.5.md) · [MIT License / 开源许可](LICENSE)
 
 ## Preview / 功能预览
 
