@@ -49,9 +49,9 @@ For the release ZIP, extract the entire archive first and keep the HTML, JavaScr
 
 ### Time range selection / 时间范围框选
 
-Drag horizontally across the speed/height timeline to select a time range. Drag either green boundary to adjust it, or enter start/end times in seconds. Click the timeline without dragging to position the playback cursor inside the active range. Double-click the timeline or click **恢复全选** (Restore full range) to restore the complete log. Each successful import starts with the full range selected.
+Move within 10 CSS pixels of either green boundary on the speed/height timeline, then drag to adjust the range. The pointer changes to a horizontal resize cursor near an edge. Dragging elsewhere does not change the selection. You can also enter start/end times in seconds. Double-click the timeline or click **恢复全选** (Restore full range) to restore the complete log. Each successful import starts with the full range selected.
 
-在地速/高度时间曲线上横向拖动即可框选范围。拖动绿色边界调整范围，或输入起始/结束秒数。单击曲线定位当前范围内的回放游标；双击曲线或点击「恢复全选」还原完整日志。每次成功导入均默认全选。
+在地速/高度时间曲线上，光标距离绿色左右边界不超过 10 个 CSS 像素时，光标变为横向调整样式，此时可拖动调整范围；其他位置拖动不会改变范围。也可输入起始/结束秒数。双击曲线或点击「恢复全选」还原完整日志。每次成功导入均默认全选。
 
 The track, hover targets, point details, mode legend, summary statistics, playback slider, and track PNG export are limited to the selected GPS samples. The timeline keeps the full-log time axis and all speed/height curves visible, with shading and green boundaries highlighting the active range. Overview profiles remain independently normalized against the full log. Boundaries snap to the nearest recorded GPS sample; the displayed boundary times show the actual selected samples, including when dragging across GPS gaps. A single-point selection is supported and has zero duration and distance.
 
