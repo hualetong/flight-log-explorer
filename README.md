@@ -24,6 +24,10 @@ Synthetic flight over a generic demonstration location, with optional online ima
 
 ![Optional online basemap / 可选在线底图](docs/images/online-map.png)
 
+OpenFreeMap streets and buildings with a synthetic campus-area track / OpenFreeMap 道路、建筑与校区附近人工轨迹（非真实飞行）：
+
+![OpenFreeMap vector streets / OpenFreeMap 矢量街道地图](docs/images/openfreemap.png)
+
 Try **查看示例轨迹** on the start screen, or import [simulated-flight.json](examples/simulated-flight.json). Download the JSON using GitHub's **Download raw file** button. The 200-second sample contains 1,001 GPS points, FBWA/AUTO/RTL modes, height, attitude, airspeed, battery, throttle, and vibration data. This is a demonstration fixture, not a navigation dataset.
 
 点击启动页面的「查看示例轨迹」，或下载并导入 [simulated-flight.json](examples/simulated-flight.json)（在 GitHub 文件页点击 Download raw file）。示例包含 200 秒、1,001 个定位点、FBWA/AUTO/RTL 模式以及高度、姿态、空速、电池、油门和振动数据，仅用于演示。
@@ -42,7 +46,7 @@ For the release ZIP, extract the entire archive first and keep the HTML, JavaScr
 
 | Feature | 功能说明 |
 | --- | --- |
-| Optional Esri satellite imagery or street map beneath the existing mode-colored track; pan, zoom, hover, time filtering and PNG export remain available. | 可选 Esri 卫星影像或街道底图，与现有模式着色轨迹叠加，继续支持平移、缩放、悬停、时间筛选和 PNG 导出。 |
+| Optional Esri satellite/street maps or OpenFreeMap (OSM) vector streets beneath the mode-colored track; pan, zoom, hover, time filtering and PNG export remain available. | 可选 Esri 卫星/街道地图或 OpenFreeMap（OSM）矢量街道图，与模式着色轨迹叠加，继续支持平移、缩放、悬停、时间筛选和 PNG 导出。 |
 | Import ArduPilot DataFlash `.BIN` files or parsed JSON containing message arrays such as `GPS`, `MODE`, and `POS`. PX4 ULog and MAVLink tlog are not supported. | 导入 ArduPilot DataFlash `.BIN` 或包含 `GPS`、`MODE`、`POS` 等消息数组的 JSON。不支持 PX4 ULog 和 MAVLink tlog。 |
 | North-up, equal-scale east/north track in meters, colored by flight mode, with start/end markers. Zoom with the wheel, drag to pan, and use **适应轨迹** to fit the track. | 北向上、等比例东/北米制轨迹，按模式着色并标记起终点。滚轮缩放、拖动平移，「适应轨迹」复位。 |
 | Hover to inspect the nearest recorded point: mode, ground speed, GPS altitude, height relative to home, airspeed, coordinates, attitude, satellites, and voltage. Click to select its time. | 悬停查看最近记录点的模式、地速、GPS 海拔、相对起飞点高度、空速、经纬度、姿态、卫星和电压；点击定位时间。 |
@@ -118,13 +122,17 @@ Vehicle type is detected from `ArduPlane`, `ArduCopter`, or `ArduRover` in `MSG`
 
 ### Online basemap / 在线地图底图
 
-Above the track, enable **在线地图底图 / Online basemap**, then choose **Satellite imagery** or **Street map**. Maps are off by default on every page load; no external requests are made while maps are off. Only visible tiles are requested, with limited concurrent loads and an in-memory cache. The service can be unavailable or restricted by network conditions; failed tiles leave the track usable and can be retried. Turning the basemap off restores the offline grid. Cached tiles may remain visible after a connection loss; uncached areas need internet access.
+Above the track, enable **在线地图底图 / Online basemap**, then choose Esri satellite imagery, Esri streets, or **Street map · OpenFreeMap (OSM)**. The menu highlights the selected source with a light background and dark text; other sources use a dark background and light text. Maps are off by default on every page load; no external requests are made while maps are off. Visible areas are loaded on demand with an in-memory cache. Failed loading leaves the track usable and can be retried. Turning the basemap off restores the offline grid. Cached Esri tiles may remain visible after a connection loss; OpenFreeMap retains a snapshot of the current view until the view changes. Uncached areas need internet access.
 
-在轨迹上方勾选「在线地图底图」，选择卫星影像或街道地图。每次打开页面默认关闭底图；关闭时不发送地图请求。仅请求可见瓦片，限制并发并使用内存缓存。服务可能受网络影响而不可用；失败时轨迹仍可操作，可点击「重试地图」。关闭底图恢复离线网格。断网后已加载瓦片可以继续显示，未缓存区域需要网络。
+在轨迹上方勾选「在线地图底图」，可选择 Esri 卫星影像、Esri 街道地图或「街道地图 · OpenFreeMap（OSM）」。菜单选中项为浅底深字，未选中项为深底浅字。每次打开页面默认关闭底图，关闭时不发送地图请求；按需加载可见区域并使用内存缓存。加载失败时轨迹仍可操作，可点击「重试地图」。关闭底图恢复离线网格。断网后已缓存的 Esri 瓦片可以继续显示，OpenFreeMap 保留当前视图快照直到视图改变；未缓存区域需要网络。
 
-**Privacy:** log files, full coordinates and telemetry arrays are not uploaded. Enabling maps sends tile requests to `server.arcgisonline.com`; the tile indices identify the viewed geographic area, and the provider can see your IP and normal request metadata. Leave maps off to retain fully offline operation.
+OpenFreeMap uses OpenStreetMap vector data and requires no API key. It provides another source of roads and buildings where Esri's detailed street tiles are missing; coverage depends on OSM data. The locally bundled MapLibre renderer works when `index.html` is opened directly from disk and requires WebGL. Style, tiles, fonts and sprites are fetched only after opting in. See the [OpenFreeMap quick start](https://openfreemap.org/quick_start/) and [service terms](https://openfreemap.org/tos/).
 
-**隐私：**不会上传日志文件、完整经纬度列表或遥测数组。开启底图后会向 `server.arcgisonline.com` 请求瓦片；瓦片索引可反映正在浏览的地理区域，服务方可获知 IP 和普通请求信息。如需全程离线，请保持底图关闭。
+OpenFreeMap 使用 OpenStreetMap 矢量数据，无需 API 密钥；在 Esri 缺少详细街道瓦片的区域，可切换它查看另一套道路和建筑数据，具体覆盖取决于 OSM 数据。本地附带的 MapLibre 渲染器支持直接双击 `index.html`，需要浏览器支持 WebGL；仅在开启此底图后联网获取样式、瓦片、字体和图标。详情见上方 OpenFreeMap 使用文档与服务条款。
+
+**Privacy:** log files, full coordinates and telemetry arrays are not uploaded. Enabling Esri maps sends tile requests to `server.arcgisonline.com`; OpenFreeMap requests go to `tiles.openfreemap.org`. Tile indices identify the viewed geographic area, and providers can see your IP and normal request metadata. Leave maps off to retain fully offline operation.
+
+**隐私：**不会上传日志文件、完整经纬度列表或遥测数组。Esri 请求发送至 `server.arcgisonline.com`，OpenFreeMap 请求发送至 `tiles.openfreemap.org`；瓦片索引可反映正在浏览的地理区域，服务方可获知 IP 和普通请求信息。如需全程离线，请保持底图关闭。
 
 Tiles come from Esri's public [World Imagery](https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer) and [World Street Map](https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer) services. Source attribution is visible on the map and in exported PNGs, following [Esri attribution guidance](https://doc.arcgis.com/en/arcgis-online/reference/display-copyrights.htm). The project's MIT license covers project code; map imagery remains subject to [Esri service terms](https://www.esri.com/en-us/legal/terms/web-site-service) and its data providers' rights. No bulk tile download or offline map package is provided.
 
@@ -164,8 +172,12 @@ BIN 根据内嵌 `FMT` 定义解码，字段格式参考上述 ArduPilot 源文�
 | `check-timeline-zoom.cjs` | Pointer-anchored timeline zoom and zoomed dragging checks / 鼠标焦点时间轴缩放与拖动验证 |
 | `check-timeline-edges.cjs` | Endpoint dragging at fractional widths / 小数宽度下的左右边界拖动验证 |
 | `online-map.js` | Optional raster tiles and Mercator overlay / 可选栅格底图与 Mercator 叠加 |
+| `vector-map.js` | Opt-in OpenFreeMap rendering and canvas composition / 可选 OpenFreeMap 渲染与画布叠加 |
+| `map-picker.js` | Accessible map source menu with consistent colors / 支持键盘、配色一致的地图源菜单 |
+| `vendor/maplibre/` | Locally bundled MapLibre GL JS 5.24.0 and third-party licenses / 本地 MapLibre GL JS 5.24.0 与第三方许可 |
 | `check-map.cjs` | Opt-in loading, projection, export, retry and offline checks with mock tiles / 模拟瓦片验证可选加载、投影、导出、重试及断网 |
 | `check-map-fallback.cjs` | Missing detailed tiles and parent-tile crop fallback / 详细瓦片缺失与父级裁剪回退验证 |
+| `check-vector-map.cjs` | Mock vector map alignment/export/offline/retry and source menu interactions / 模拟矢量地图对齐、导出、断网、重试及地图菜单交互验证 |
 
 An inline Web Worker runs parsing in the background, including when opened directly from disk. Older browsers without Web Worker support fall back to the main thread. Runtime use requires no development dependencies.
 
@@ -196,6 +208,7 @@ node check-timeline-zoom.cjs
 node check-timeline-edges.cjs
 node check-map.cjs
 node check-map-fallback.cjs
+node check-vector-map.cjs
 ```
 
 Checks use the simulated example by default. Set `BROWSER_CHANNEL=msedge` to use an installed Microsoft Edge, or `FLIGHT_LOG_DIR` to test the original BIN fixture. These checks cover hover, click, zoom, seeking, playback, PNG export, import-error handling, and mobile layout.
@@ -206,4 +219,8 @@ Checks use the simulated example by default. Set `BROWSER_CHANNEL=msedge` to use
 
 Released under the [MIT License](LICENSE). Feedback and contributions are welcome through [GitHub Issues](https://github.com/hualetong/flight-log-explorer/issues) and pull requests. When reporting an issue, include your browser, firmware/log format, and steps to reproduce; share synthetic or sanitized logs where possible.
 
+Bundled MapLibre GL JS is licensed under BSD-3-Clause; its license and dependency notices are retained in [vendor/maplibre/LICENSE.txt](vendor/maplibre/LICENSE.txt). OpenFreeMap map data attribution appears on the track and exported PNG: OpenFreeMap, © OpenMapTiles, © OpenStreetMap contributors. Map data is subject to its own licenses and service terms.
+
 项目采用 [MIT 许可](LICENSE)，欢迎通过 [GitHub Issues](https://github.com/hualetong/flight-log-explorer/issues) 和 Pull Request 反馈与贡献。反馈时请提供浏览器、固件/日志格式和复现步骤；示例日志建议使用模拟或脱敏数据。
+
+附带的 MapLibre GL JS 使用 BSD-3-Clause 许可，其许可及依赖声明保存在上述第三方许可文件中。OpenFreeMap 底图及 PNG 导出保留 OpenFreeMap、© OpenMapTiles、© OpenStreetMap contributors 署名；地图数据遵循各自许可及服务条款。

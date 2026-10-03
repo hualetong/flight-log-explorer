@@ -1,0 +1,3 @@
+MapLibre GL JS 5.24.0
+Source: https://registry.npmjs.org/maplibre-gl/5.24.0
+Classic browser build for offline file:// entry.

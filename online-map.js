@@ -1,6 +1,7 @@
 'use strict';
 // Optional raster tiles. No requests are made until the user enables the basemap.
 const mapProviders={
+ openfreemap:{vector:true,credit:'OpenFreeMap · © OpenMapTiles · © OpenStreetMap contributors'},
  imagery:{service:'World_Imagery',credit:'Source: Esri, Vantor, Earthstar Geographics, and the GIS User Community'},
  street:{service:'World_Street_Map',credit:'Sources: Esri, HERE, Garmin, USGS, Intermap, INCREMENT P, NRCan, Esri Japan, METI, Esri China (Hong Kong), Esri Korea, Esri (Thailand), NGCC, (c) OpenStreetMap contributors, and the GIS User Community'}
 };
@@ -12,7 +13,7 @@ function mapPoint(p){prepareMap();if(mapPoints.has(p))return mapPoints.get(p);co
 function displayPoint(p){return mapEnabled&&log&&Number.isFinite(p.lat)?mapPoint(p):p;}
 function scheduleMapDraw(){if(mapFrame)return;mapFrame=requestAnimationFrame(()=>{mapFrame=0;if(mapEnabled&&log)draw();});}
 function mapStatus(text){const el=document.getElementById('map-status');if(el&&el.textContent!==text)el.textContent=text;}
-function stopMapRequests(){for(const tile of mapTiles.values())if(tile.state==='loading'){tile.controller.abort();clearTimeout(tile.timeout);tile.controller=null;tile.state='idle';}mapActive=0;mapVisible=[];}
+function stopMapRequests(){stopVectorMap(!navigator.onLine);for(const tile of mapTiles.values())if(tile.state==='loading'){tile.controller.abort();clearTimeout(tile.timeout);tile.controller=null;tile.state='idle';}mapActive=0;mapVisible=[];}
 function cachedMapTile(provider,z,x,y){const key=provider+'/'+z+'/'+x+'/'+y;let tile=mapTiles.get(key);if(!tile){tile={provider,z,x,y,state:'idle',used:performance.now()};mapTiles.set(key,tile);}tile.used=performance.now();return tile;}
 function pumpMapTiles(){
  if(!mapEnabled||!navigator.onLine)return;
@@ -26,7 +27,7 @@ function pumpMapTiles(){
  }
 }
 function drawOnlineMap(g){
- if(!mapEnabled||!log)return;prepareMap();
+ if(!mapEnabled||!log)return;prepareMap();if(mapProviders[mapProvider].vector){drawVectorMap(g);return;}
  const factor=mapOrigin.factor,z=Math.max(0,Math.min(19,Math.floor(Math.log2(mapWorld*factor*view.scale/256)))),n=2**z,unit=mapWorld/n,tilePixels=unit*factor*view.scale;
  const centerX=mapOrigin.x+view.cx/factor,centerY=mapOrigin.y+view.cy/factor;
  const minX=Math.floor((centerX-W/(2*view.scale*factor)+mapWorld/2)/unit),maxX=Math.floor((centerX+W/(2*view.scale*factor)+mapWorld/2)/unit);
@@ -45,7 +46,7 @@ function drawOnlineMap(g){
  mapStatus(!navigator.onLine?'网络已断开：保留已加载底图，轨迹仍可使用。':failed?'部分地图加载失败，轨迹仍可使用；可点击重试。':fallback?'当前级别底图不可用：已自动使用较低级别底图，轨迹缩放保持不变。':mapVisible.every(tile=>tile.state==='loaded')?'在线地图已加载。':'正在加载在线地图…');
 }
 function drawMapCredit(g,width,height){if(!mapEnabled)return;g.save();g.font='10px Segoe UI';g.textAlign='left';const lines=[];let line='';for(const word of mapProviders[mapProvider].credit.split(' ')){const next=line?line+' '+word:word;if(line&&g.measureText(next).width>width-16){lines.push(line);line=word;}else line=next;}if(line)lines.push(line);const top=height-lines.length*12-8;g.fillStyle='#0b121ce6';g.fillRect(0,top,width,height-top);g.fillStyle='#e7f0f7';lines.forEach((text,i)=>g.fillText(text,8,top+13+i*12));g.restore();}
-function updateMapCredit(){const el=document.getElementById('map-attribution');el.hidden=!mapEnabled;el.textContent=mapProviders[mapProvider].credit;}
+function updateMapCredit(){const el=document.getElementById('map-attribution');el.hidden=!mapEnabled;el.textContent=mapProviders[mapProvider].credit;if(mapProvider==='openfreemap'){el.replaceChildren();for(const [label,url] of [['OpenFreeMap','https://openfreemap.org/'],['© OpenMapTiles','https://openmaptiles.org/'],['© OpenStreetMap contributors','https://www.openstreetmap.org/copyright']]){if(el.childNodes.length)el.append(' · ');const link=document.createElement('a');link.textContent=label;link.href=url;link.target='_blank';link.rel='noopener noreferrer';el.append(link);}}}
 document.addEventListener('DOMContentLoaded',()=>{
  const toggle=document.getElementById('map-enabled'),provider=document.getElementById('map-provider');
  toggle.onchange=()=>{

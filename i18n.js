@@ -1,6 +1,7 @@
 'use strict';
 // UI translations retain the original Chinese text; imported telemetry is never rewritten.
 const translations={
+ '街道地图 · OpenFreeMap（OSM）':'Street map · OpenFreeMap (OSM)','矢量底图加载失败，轨迹仍可使用；可点击重试。':'Vector basemap failed; the track remains usable. Use Retry map.',
  '当前级别底图不可用：已自动使用较低级别底图，轨迹缩放保持不变。':'Tiles at this level are unavailable: using a lower-resolution basemap without changing track zoom.',
  '在线地图底图':'Online basemap','地图底图类型':'Basemap type','卫星影像 · Esri':'Satellite imagery · Esri','街道地图 · Esri':'Street map · Esri','重试地图':'Retry map',
  '底图默认关闭，开启后需要互联网连接。':'Basemap is off by default; internet is required when enabled.',
