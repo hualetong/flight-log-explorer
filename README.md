@@ -1,8 +1,8 @@
 # Flight Log Explorer / (飞行日志可视化工具)
 
-An offline, browser-based ArduPilot flight log explorer. Version 0.2.
+An offline, browser-based ArduPilot flight log explorer. Version 0.3.
 
-本地离线运行的 ArduPilot 飞行日志交互工具，版本 v0.2。
+本地离线运行的 ArduPilot 飞行日志交互工具，版本 v0.3。
 
 ## Quick start / 快速开始
 
@@ -22,6 +22,20 @@ Download or clone this repository, then double-click `index.html`. Click **导�
 | Summary of valid GPS duration, cumulative track distance, maximum ground speed, and position count. Ground/taxi records are included; takeoff and landing are not detected automatically. | 概览显示有效 GPS 时间范围、累积距离、最大地速和定位点数。包含地面滑行与静止记录，不自动识别起飞和着陆。 |
 
 ## Data interpretation / 数据口径
+
+### Time range selection / 时间范围框选
+
+Drag horizontally across the speed/height timeline to select a time range. Drag either green boundary to adjust it, or enter start/end times in seconds. Click the timeline without dragging to position the playback cursor inside the active range. Double-click the timeline or click **恢复全选** (Restore full range) to restore the complete log. Each successful import starts with the full range selected.
+
+在地速/高度时间曲线上横向拖动即可框选范围。拖动绿色边界调整范围，或输入起始/结束秒数。单击曲线定位当前范围内的回放游标；双击曲线或点击「恢复全选」还原完整日志。每次成功导入均默认全选。
+
+The track, hover targets, point details, mode legend, summary statistics, playback slider, and PNG export are limited to the selected GPS samples. The timeline keeps the full-log time axis for selecting another range, but hides curves outside the selection. Profiles are normalized independently using the active range. Boundaries snap to the nearest recorded GPS sample; the displayed boundary times show the actual selected samples, including when dragging across GPS gaps. A single-point selection is supported and has zero duration and distance.
+
+轨迹、悬停目标、定位点详情、模式图例、统计、回放滑块和 PNG 导出均限定到所选 GPS 采样点。时间曲线保留完整日志的时间轴用于重新框选，但隐藏区间外曲线；曲线按当前范围各自归一化。边界吸附到最近的 GPS 记录点，显示的是实际选中点的时间，跨 GPS 空白区框选时也遵循此规则。支持单点范围，其时长和距离为零。
+
+Elapsed/log timestamps remain tied to the original log. Summary duration is the difference between the selected endpoint timestamps, and distance includes only connected segments within the selection. Mode and preceding telemetry still use the original time-alignment rules so that a mode activated before the selected range remains correctly identified.
+
+相对时间和日志时间保留原始日志基准；统计时长为所选两端时间之差，距离只累加区间内连续轨迹。模式和附加消息仍按原有时间规则匹配，因此区间开始之前切换的模式仍可正确显示。
 
 ### Display selection / 显示信息选择
 
