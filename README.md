@@ -4,6 +4,10 @@ An offline-capable, browser-based ArduPilot flight log explorer with optional on
 
 本地离线运行、可选联网底图的 ArduPilot 飞行日志交互工具。v0.5 发布包已包含中英文切换、时间轴缩放和在线地图。
 
+The main branch additionally supports `.waypoints` mission overlays; this feature is not included in the v0.5 release ZIP.
+
+main 分支新增 `.waypoints` 任务航点叠加；v0.5 发布 ZIP 尚不包含此功能。
+
 [Download v0.5 / 下载 v0.5](https://github.com/hualetong/flight-log-explorer/releases/tag/v0.5) · [Release notes / 更新说明](docs/RELEASE-v0.5.md) · [MIT License / 开源许可](LICENSE)
 
 ## Preview / 功能预览
@@ -46,6 +50,7 @@ For the release ZIP, extract the entire archive first and keep the HTML, JavaScr
 
 | Feature | 功能说明 |
 | --- | --- |
+| Overlay a QGC WPL 110 `.waypoints` mission with numbered markers, order lines, item inspection and PNG export (main branch). | 叠加 QGC WPL 110 `.waypoints` 任务，显示编号、任务顺序示意线、任务项详情并包含在 PNG 中（main 分支）。 |
 | Optional Esri satellite/street maps or OpenFreeMap (OSM) vector streets beneath the mode-colored track; pan, zoom, hover, time filtering and PNG export remain available. | 可选 Esri 卫星/街道地图或 OpenFreeMap（OSM）矢量街道图，与模式着色轨迹叠加，继续支持平移、缩放、悬停、时间筛选和 PNG 导出。 |
 | Import ArduPilot DataFlash `.BIN` files or parsed JSON containing message arrays such as `GPS`, `MODE`, and `POS`. PX4 ULog and MAVLink tlog are not supported. | 导入 ArduPilot DataFlash `.BIN` 或包含 `GPS`、`MODE`、`POS` 等消息数组的 JSON。不支持 PX4 ULog 和 MAVLink tlog。 |
 | North-up, equal-scale east/north track in meters, colored by flight mode, with start/end markers. Zoom with the wheel, drag to pan, and use **适应轨迹** to fit the track. | 北向上、等比例东/北米制轨迹，按模式着色并标记起终点。滚轮缩放、拖动平移，「适应轨迹」复位。 |
@@ -55,6 +60,28 @@ For the release ZIP, extract the entire archive first and keep the HTML, JavaScr
 | Summary of valid GPS duration, cumulative track distance, maximum ground speed, and position count. Ground/taxi records are included; takeoff and landing are not detected automatically. | 概览显示有效 GPS 时间范围、累积距离、最大地速和定位点数。包含地面滑行与静止记录，不自动识别起飞和着陆。 |
 
 ## Data interpretation / 数据口径
+
+### Mission waypoint overlay / 任务航点叠加
+
+Import your flight log, then click **＋ 导入航点 / Import waypoints** above the track to select a `.waypoints` file. Dragging a waypoint file onto the page also works; you can drop a log and waypoint file together. Files use the [QGC WPL 110 plain-text mission format](https://mavlink.io/en/file_formats/), commonly exported by Mission Planner. A waypoint file imported before the log waits until valid GPS data is available. Parsing stays local and does not enable online maps.
+
+先导入飞行日志，再点击轨迹上方「＋ 导入航点」选择 `.waypoints` 文件；也支持拖入，或同时拖入日志与航点文件。支持 Mission Planner 常用的 QGC WPL 110 文本任务格式。先导入航点时，会等待日志提供有效 GPS 后叠加。文件只在本机读取，不会自动开启在线地图。
+
+Yellow diamonds label the original mission sequence numbers (`WP 1`, `WP 2`, etc.); a sequence-zero `NAV_WAYPOINT` is treated as the file's Home and shown separately. Dashed lines connect supported navigation positions in mission order, skipping non-navigation DO items. These lines illustrate order, not the aircraft's predicted flight path: splines, loiter circles, turns, jumps, conditional behavior and RTL are not simulated. Missing navigation positions and jumps break the line. Home is not connected to the first mission point.
+
+黄色菱形保留文件中的任务序号（WP 1、WP 2 等）；序号 0 的 `NAV_WAYPOINT` 作为文件 Home 单独标记。虚线按任务顺序连接支持的导航位置，跳过普通 DO 指令，仅表示顺序；不模拟样条、盘旋、转弯、跳转、条件行为或 RTL 的实际航线。未指定位置的导航项与跳转指令会断开示意连线；Home 不与首个任务点连线。
+
+Hover over a diamond to inspect its command, coordinates, frame, altitude, parameters and file flags. Click it to keep the item selected, or select any item in **航点详情 / Waypoint details**, including commands without positions. Altitude values retain their frame: MSL, relative to the mission Home, or above terrain. They are not converted to GPS altitude or relative to the first flight-log point. The file's Current flag is shown as recorded and does not indicate the aircraft's live progress.
+
+悬停菱形查看命令、经纬度、坐标系、高度、参数和文件标记；点击固定选择，也可在「航点详情」下拉菜单查看所有任务项，包括不含位置的指令。高度保留原始坐标系口径（海拔、相对任务 Home、地形以上高度），不转换为 GPS 海拔或相对日志首点高度。Current 标记保留文件值，不代表飞机当前执行进度。
+
+Use **显示航点 / Show waypoints**, **清除航点 / Clear waypoints**, and **适应轨迹与航点 / Fit track and waypoints** to manage the overlay. Flight time selection filters only recorded flight data; the complete mission remains visible and does not affect log statistics or playback. Offline and online projections share the same GPS coordinates. Track PNG export includes visible waypoint markers and lines. A new waypoint file replaces the previous overlay; an invalid file retains it. Importing a new log keeps the loaded mission for comparison; clear or replace it when changing missions.
+
+通过「显示航点」「清除航点」「适应轨迹与航点」管理叠加。时间范围只筛选日志数据，完整任务仍保持显示，不参与日志统计或回放；离线图与在线底图使用一致的 GPS 坐标叠加。轨迹 PNG 包含当前可见的航点与连线。新航点文件替换旧叠加，导入失败保留旧任务；更换日志时保留已载入任务，切换任务时请清除或替换。
+
+Supported plotted navigation commands are waypoint, loiter, land, takeoff, loiter-to-altitude, arc waypoint, spline waypoint, VTOL takeoff/land and payload place, in global frames 0/3/5/6/10/11. Coordinates in this text format are decimal degrees, including frames named `_INT`. Local frames, unknown commands, non-navigation positions and unspecified (`NaN` or both latitude/longitude zero) positions appear only in the inspector. This version supports one overlay, not `.plan`, geofences or rally files. Try [simulated-flight.waypoints](examples/simulated-flight.waypoints) with the built-in flight example; all coordinates are artificial.
+
+可绘制的导航命令包括普通航点、盘旋、降落、起飞、盘旋至指定高度、圆弧航点、样条航点、VTOL 起降和投放位置，坐标系支持 0/3/5/6/10/11。文本文件经纬度按十进制度读取，包括名称含 `_INT` 的坐标系。局部坐标、未知命令、非导航位置及未指定位置（NaN 或经纬度同时为 0）仅在详情中显示。当前支持单个任务叠加，不支持 `.plan`、围栏或集结点文件。可配合内置飞行示例导入上方模拟航点文件，坐标均为人工生成。
 
 ### Time range selection / 时间范围框选
 
@@ -172,6 +199,8 @@ BIN 根据内嵌 `FMT` 定义解码，字段格式参考上述 ArduPilot 源文�
 | `check-timeline-zoom.cjs` | Pointer-anchored timeline zoom and zoomed dragging checks / 鼠标焦点时间轴缩放与拖动验证 |
 | `check-timeline-edges.cjs` | Endpoint dragging at fractional widths / 小数宽度下的左右边界拖动验证 |
 | `online-map.js` | Optional raster tiles and Mercator overlay / 可选栅格底图与 Mercator 叠加 |
+| `waypoint-parser.js` / `waypoint-overlay.js` | WPL 110 mission parsing, overlay and item inspection / WPL 110 解析、航点叠加与任务详情 |
+| `test-waypoints.cjs` / `check-waypoints.cjs` | Mission semantics, validation and overlay interactions / 任务语义、文件校验和叠加交互验证 |
 | `vector-map.js` | Opt-in OpenFreeMap rendering and canvas composition / 可选 OpenFreeMap 渲染与画布叠加 |
 | `map-picker.js` | Accessible map source menu with consistent colors / 支持键盘、配色一致的地图源菜单 |
 | `vendor/maplibre/` | Locally bundled MapLibre GL JS 5.24.0 and third-party licenses / 本地 MapLibre GL JS 5.24.0 与第三方许可 |
@@ -189,6 +218,7 @@ Run from the repository directory / 在仓库目录运行：
 
 ```sh
 node test-parser.cjs
+node test-waypoints.cjs
 ```
 
 This checks invalid GPS, fix-loss gaps, time alignment, and stale data. Optional real-log comparisons run when the original log75/log76/log77 fixtures and parsed JSON exist in `../10.1`, or in the directory specified by `FLIGHT_LOG_DIR`. Real flight logs are not distributed with this repository. The original log77 fixture named `noGPS` actually contains 274 valid GPS records and is displayed accordingly.
@@ -209,6 +239,7 @@ node check-timeline-edges.cjs
 node check-map.cjs
 node check-map-fallback.cjs
 node check-vector-map.cjs
+node check-waypoints.cjs
 ```
 
 Checks use the simulated example by default. Set `BROWSER_CHANNEL=msedge` to use an installed Microsoft Edge, or `FLIGHT_LOG_DIR` to test the original BIN fixture. These checks cover hover, click, zoom, seeking, playback, PNG export, import-error handling, and mobile layout.

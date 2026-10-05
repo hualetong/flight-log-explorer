@@ -1,6 +1,12 @@
 'use strict';
 // UI translations retain the original Chinese text; imported telemetry is never rewritten.
 const translations={
+ '可叠加':'Can be overlaid',
+ '文件 Current 标记':'File Current flag','航点未加载。':'No waypoints loaded.',
+ '＋ 导入航点':'+ Import waypoints','显示航点':'Show waypoints','适应轨迹与航点':'Fit track and waypoints','清除航点':'Clear waypoints','支持 QGC WPL 110；航点仅在本机读取。':'QGC WPL 110 supported; waypoint files are read locally.',
+ '航点详情':'Waypoint details','选择任务项':'Select mission item','任务序号':'Mission index','命令':'Command','坐标系':'Coordinate frame','任务高度':'Mission altitude','海拔':'MSL altitude','相对 Home 高度':'Height relative to Home','地形以上高度':'Height above terrain','原始高度':'Raw altitude','自动继续':'Autocontinue','叠加状态':'Overlay status','已叠加':'Overlaid',
+ '不含可绘制的导航位置':'No supported navigation position','局部坐标暂不叠加':'Local coordinates are not overlaid','位置未指定':'Position unspecified','任务项':'mission items','可叠加位置':'plottable positions','导入日志后叠加':'Import a log to overlay','航点导入失败：':'Waypoint import failed: ','保留上一次成功导入的航点。':'Previous successfully imported waypoints are retained.',
+ '仅支持 QGC WPL 110 航点文件。':'Only QGC WPL 110 waypoint files are supported.','航点文件第 ':'Waypoint file line ',' 行无效。':' is invalid.','航点文件没有任务项。':'The waypoint file has no mission items.','请导入 .waypoints 文件。':'Please import a .waypoints file.','◇ 航点 · 虚线为任务顺序示意':'◇ Waypoints · Dashed lines show mission order',
  '街道地图 · OpenFreeMap（OSM）':'Street map · OpenFreeMap (OSM)','矢量底图加载失败，轨迹仍可使用；可点击重试。':'Vector basemap failed; the track remains usable. Use Retry map.',
  '当前级别底图不可用：已自动使用较低级别底图，轨迹缩放保持不变。':'Tiles at this level are unavailable: using a lower-resolution basemap without changing track zoom.',
  '在线地图底图':'Online basemap','地图底图类型':'Basemap type','卫星影像 · Esri':'Satellite imagery · Esri','街道地图 · Esri':'Street map · Esri','重试地图':'Retry map',
