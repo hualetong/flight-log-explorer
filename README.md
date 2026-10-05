@@ -61,6 +61,12 @@ For the release ZIP, extract the entire archive first and keep the HTML, JavaScr
 
 ## Data interpretation / 数据口径
 
+### Track display height / 轨迹显示高度
+
+The track area grows with the viewport: desktop defaults to 75% of window height, between 620 and 1,000 pixels. Mobile uses a smaller responsive default. Use **显示高度 / Display height** above the plot to choose 400–1,400 pixels; the setting is saved locally. **恢复默认高度 / Reset height** restores automatic sizing. Resizing redraws the canvas, basemap and waypoints while preserving the selected time range and playback position.
+
+轨迹区随窗口高度增高：桌面默认使用窗口高度的 75%，限制在 620～1000 像素，移动端使用较小的自适应高度。图上方「显示高度」可手动选择 400～1400 像素并保存在本机；「恢复默认高度」恢复自动尺寸。调整后重新绘制画布、底图与航点，保留框选时间范围及当前进度。
+
 ### Mission waypoint overlay / 任务航点叠加
 
 Import your flight log, then click **＋ 导入航点 / Import waypoints** above the track to select a `.waypoints` file. Dragging a waypoint file onto the page also works; you can drop a log and waypoint file together. Files use the [QGC WPL 110 plain-text mission format](https://mavlink.io/en/file_formats/), commonly exported by Mission Planner. A waypoint file imported before the log waits until valid GPS data is available. Parsing stays local and does not enable online maps.
@@ -190,6 +196,7 @@ BIN 根据内嵌 `FMT` 定义解码，字段格式参考上述 ArduPilot 源文�
 | `app.js` | Canvas rendering, interactions, and import / Canvas 绘图、交互与导入 |
 | `charts.js` | Custom parameter charts and PNG export / 自定义参数图像及 PNG 导出 |
 | `style.css` | Interface styling / 界面样式 |
+| `plot-layout.js` / `check-plot-layout.cjs` | Responsive/persistent track height and layout checks / 自适应轨迹高度、设置记忆及布局验证 |
 | `test-parser.cjs` | Parser verification / 解析验证 |
 | `check-ui.cjs` | Browser interaction verification / 浏览器交互验证 |
 | `check-charts.cjs` | Timeline context and parameter chart verification / 全时间轴与参数图像验证 |
@@ -240,6 +247,7 @@ node check-map.cjs
 node check-map-fallback.cjs
 node check-vector-map.cjs
 node check-waypoints.cjs
+node check-plot-layout.cjs
 ```
 
 Checks use the simulated example by default. Set `BROWSER_CHANNEL=msedge` to use an installed Microsoft Edge, or `FLIGHT_LOG_DIR` to test the original BIN fixture. These checks cover hover, click, zoom, seeking, playback, PNG export, import-error handling, and mobile layout.

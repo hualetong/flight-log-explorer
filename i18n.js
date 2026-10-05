@@ -1,6 +1,7 @@
 'use strict';
 // UI translations retain the original Chinese text; imported telemetry is never rewritten.
 const translations={
+ '显示高度':'Display height','轨迹显示区高度':'Track display height','恢复默认高度':'Reset height',
  '可叠加':'Can be overlaid',
  '文件 Current 标记':'File Current flag','航点未加载。':'No waypoints loaded.',
  '＋ 导入航点':'+ Import waypoints','显示航点':'Show waypoints','适应轨迹与航点':'Fit track and waypoints','清除航点':'Clear waypoints','支持 QGC WPL 110；航点仅在本机读取。':'QGC WPL 110 supported; waypoint files are read locally.',
