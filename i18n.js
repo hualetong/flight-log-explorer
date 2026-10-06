@@ -1,6 +1,7 @@
 'use strict';
 // UI translations retain the original Chinese text; imported telemetry is never rewritten.
 const translations={
+ '显示机头朝向':'Show nose heading','导入日志后显示机头朝向':'Import a log to show nose heading','机头朝向缺失':'Nose heading unavailable','机头朝向已隐藏':'Nose heading hidden','机头朝向':'Nose heading',
  '显示高度':'Display height','轨迹显示区高度':'Track display height','恢复默认高度':'Reset height',
  '可叠加':'Can be overlaid',
  '文件 Current 标记':'File Current flag','航点未加载。':'No waypoints loaded.',

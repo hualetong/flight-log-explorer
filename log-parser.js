@@ -77,7 +77,7 @@
       const lat=num(g.Lat),lon=num(g.Lng??g.Lon);
       if(!(num(g.Status)>=3 && lat!==null && lon!==null && Math.abs(lat)<=90 && Math.abs(lon)<=180 && (lat!==0||lon!==0))) {previousValid=null;continue;}
       const p=latest(pos,g.t),m=latest(modes,g.t,Infinity),a=latest(att,g.t),air=latest(arsp,g.t),c=latest(ctun,g.t),b=latest(bat,g.t);
-      points.push({t:g.t,lat,lon,speed:num(g.Spd),alt:num(g.Alt),relativeAlt:num(p?.RelHomeAlt),mode:m ? m.ModeNum??m.Mode : null,roll:num(a?.Roll),pitch:num(a?.Pitch),airspeed:num(air?.Airspeed??c?.As),voltage:num(b?.Volt),satellites:num(g.NSats),hdop:num(g.HDop),break:previousValid===null || g.t-previousValid>3});
+      points.push({t:g.t,lat,lon,speed:num(g.Spd),alt:num(g.Alt),relativeAlt:num(p?.RelHomeAlt),mode:m ? m.ModeNum??m.Mode : null,roll:num(a?.Roll),pitch:num(a?.Pitch),yaw:num(a?.Yaw)===null?null:((num(a.Yaw)%360)+360)%360,airspeed:num(air?.Airspeed??c?.As),voltage:num(b?.Volt),satellites:num(g.NSats),hdop:num(g.HDop),break:previousValid===null || g.t-previousValid>3});
       previousValid=g.t;
     }
     if(!points.length) throw new Error('日志中没有有效 GPS 定位点（需要 Status ≥ 3）。无法生成地理轨迹；请检查 GPS 是否连接并获得定位。');

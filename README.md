@@ -61,6 +61,16 @@ For the release ZIP, extract the entire archive first and keep the HTML, JavaScr
 
 ## Data interpretation / 数据口径
 
+### Nose heading / 机头朝向
+
+**显示机头朝向 / Show nose heading** is enabled by default. A white arrow at the selected or hovered flight point shows the recorded nose direction and updates while seeking or playing back; the adjacent status shows its angle. The north-up view uses 0° = north, 90° = east, 180° = south, and 270° = west. The arrow is included in track PNG exports and stays aligned on offline/online maps.
+
+「显示机头朝向」默认开启。在当前定位点或悬停点显示白色方向箭头，随进度和回放更新，控件旁显示朝向角度。北向上图中，0°朝北、90°朝东、180°朝南、270°朝西。轨迹 PNG 包含箭头，离线图与在线底图方向一致。
+
+Heading uses actual `ATT.Yaw` in degrees, as described in the [ArduPilot ATT log documentation](https://ardupilot.org/copter/docs/common-downloading-and-analyzing-data-logs-in-mission-planner.html). It uses the latest preceding attitude record within two seconds and wraps angles to 0–360°. Missing/non-finite/stale yaw shows an unavailable status and retains the circular flight marker. GPS course over ground, desired yaw and waypoint direction are not substituted for nose heading. The display is an attitude estimate recorded in the log, not independent ground truth.
+
+朝向使用 `ATT.Yaw` 的实际角度，向前匹配最长两秒的姿态记录，角度归一到 0～360°。缺失、非有限数值或过期时显示缺失状态并保留圆点标记；不使用 GPS 航迹方向、目标航向或航点方向替代。图中显示的是日志记录的姿态估计。
+
 ### Track display height / 轨迹显示高度
 
 The track area grows with the viewport: desktop defaults to 75% of window height, between 620 and 1,000 pixels. Mobile uses a smaller responsive default. Use **显示高度 / Display height** above the plot to choose 400–1,400 pixels; the setting is saved locally. **恢复默认高度 / Reset height** restores automatic sizing. Resizing redraws the canvas, basemap and waypoints while preserving the selected time range and playback position.
@@ -248,6 +258,7 @@ node check-map-fallback.cjs
 node check-vector-map.cjs
 node check-waypoints.cjs
 node check-plot-layout.cjs
+node check-heading.cjs
 ```
 
 Checks use the simulated example by default. Set `BROWSER_CHANNEL=msedge` to use an installed Microsoft Edge, or `FLIGHT_LOG_DIR` to test the original BIN fixture. These checks cover hover, click, zoom, seeking, playback, PNG export, import-error handling, and mobile layout.
