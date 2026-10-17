@@ -1,14 +1,14 @@
 # Flight Log Explorer / (飞行日志可视化工具)
 
-An offline-capable, browser-based ArduPilot flight log explorer with optional online basemaps. The v0.5 release includes Chinese/English, timeline zoom and online maps.
+An offline-capable, browser-based ArduPilot flight log explorer with optional online basemaps. The v0.6 release includes Chinese/English, timeline zoom and online maps.
 
-本地离线运行、可选联网底图的 ArduPilot 飞行日志交互工具。v0.5 发布包已包含中英文切换、时间轴缩放和在线地图。
+本地离线运行、可选联网底图的 ArduPilot 飞行日志交互工具。v0.6 发布包已包含中英文切换、时间轴缩放和在线地图。
 
-The main branch additionally supports `.waypoints` mission overlays; this feature is not included in the v0.5 release ZIP.
+The v0.6 ZIP also includes `.waypoints` mission overlays, recorded nose-heading arrows, and adjustable track display height.
 
-main 分支新增 `.waypoints` 任务航点叠加；v0.5 发布 ZIP 尚不包含此功能。
+v0.6 ZIP 已包含 `.waypoints` 航点叠加、机头方向箭头与可调节轨迹显示高度。
 
-[Download v0.5 / 下载 v0.5](https://github.com/hualetong/flight-log-explorer/releases/tag/v0.5) · [Release notes / 更新说明](docs/RELEASE-v0.5.md) · [MIT License / 开源许可](LICENSE)
+[Download v0.6 / 下载 v0.6](https://github.com/hualetong/flight-log-explorer/releases/tag/v0.6) · [Release notes / 更新说明](docs/RELEASE-v0.6.md) · [MIT License / 开源许可](LICENSE)
 
 ## Preview / 功能预览
 
@@ -50,7 +50,7 @@ For the release ZIP, extract the entire archive first and keep the HTML, JavaScr
 
 | Feature | 功能说明 |
 | --- | --- |
-| Overlay a QGC WPL 110 `.waypoints` mission with numbered markers, order lines, item inspection and PNG export (main branch). | 叠加 QGC WPL 110 `.waypoints` 任务，显示编号、任务顺序示意线、任务项详情并包含在 PNG 中（main 分支）。 |
+| Overlay a QGC WPL 110 `.waypoints` mission with numbered markers, order lines, item inspection and PNG export. | 叠加 QGC WPL 110 `.waypoints` 任务，显示编号、任务顺序示意线、任务项详情并包含在 PNG 中。 |
 | Optional Esri satellite/street maps or OpenFreeMap (OSM) vector streets beneath the mode-colored track; pan, zoom, hover, time filtering and PNG export remain available. | 可选 Esri 卫星/街道地图或 OpenFreeMap（OSM）矢量街道图，与模式着色轨迹叠加，继续支持平移、缩放、悬停、时间筛选和 PNG 导出。 |
 | Import ArduPilot DataFlash `.BIN` files or parsed JSON containing message arrays such as `GPS`, `MODE`, and `POS`. PX4 ULog and MAVLink tlog are not supported. | 导入 ArduPilot DataFlash `.BIN` 或包含 `GPS`、`MODE`、`POS` 等消息数组的 JSON。不支持 PX4 ULog 和 MAVLink tlog。 |
 | North-up, equal-scale east/north track in meters, colored by flight mode, with start/end markers. Zoom with the wheel, drag to pan, and use **适应轨迹** to fit the track. | 北向上、等比例东/北米制轨迹，按模式着色并标记起终点。滚轮缩放、拖动平移，「适应轨迹」复位。 |
